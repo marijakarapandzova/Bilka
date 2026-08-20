@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/healthpulse
+    username: healthpulse
+    password: healthpulse
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9094}
+
+  cloud:
+    consul:
+      enabled: false
+
+server:
+  port: 8082
+
+plantpulse:
+  jwt:
+    secret: this-is-a-very-long-development-only-secret-key-change-me-32chars

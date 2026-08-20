@@ -1,0 +1,50 @@
+version: "3.8"
+
+networks:
+  shared_net:
+    name: bilka_shared_net
+    external: true
+
+volumes:
+  health-postgres-data:
+
+services:
+  health-postgres:
+    image: postgres:16
+    container_name: healthpulse-postgres
+    environment:
+      POSTGRES_DB: healthpulse
+      POSTGRES_USER: healthpulse
+      POSTGRES_PASSWORD: healthpulse
+    ports:
+      - "5434:5432"
+    volumes:
+      - health-postgres-data:/var/lib/postgresql/data
+    networks:
+      - shared_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U healthpulse"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  health-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: health_service
+    ports:
+      - "9001:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://health-postgres:5432/healthpulse
+      SPRING_DATASOURCE_USERNAME: healthpulse
+      SPRING_DATASOURCE_PASSWORD: healthpulse
+      JWT_SECRET: ${JWT_SECRET:-this-is-a-very-long-development-only-secret-key-please-change-this-in-production-for-security}
+    volumes:
+      - ../Indoor_Plant_Health_and_Growth_Factors.csv:/app/Indoor_Plant_Health_and_Growth_Factors.csv
+    networks:
+      - shared_net
+    depends_on:
+      health-postgres:
+        condition: service_healthy

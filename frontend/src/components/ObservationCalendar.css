@@ -1,0 +1,224 @@
+.observation-calendar {
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.calendar-header h3 {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 20px;
+  margin: 0;
+  color: var(--ink);
+  flex: 1;
+  text-align: center;
+}
+
+.nav-btn {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: var(--ink);
+}
+
+.nav-btn:hover {
+  background: var(--green-pale);
+  border-color: var(--green);
+  color: var(--green-deep);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.calendar-weekdays div {
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  padding: 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 70px;
+}
+
+.calendar-day.empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+.calendar-day.empty:hover {
+  background: transparent;
+  border: none;
+}
+
+.calendar-day.today {
+  border-color: var(--green);
+  background: var(--green-pale);
+  box-shadow: 0 0 0 2px var(--green);
+}
+
+.calendar-day.healthy {
+  border-color: var(--green);
+  background: var(--green-pale);
+}
+
+.calendar-day.healthy:hover {
+  box-shadow: 0 0 8px rgba(95, 167, 88, 0.2);
+  transform: translateY(-2px);
+}
+
+.calendar-day.diseased {
+  border-color: var(--berry);
+  background: var(--berry-pale);
+}
+
+.calendar-day.diseased:hover {
+  box-shadow: 0 0 8px rgba(225, 84, 118, 0.2);
+  transform: translateY(-2px);
+}
+
+.day-number {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.day-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  justify-content: center;
+}
+
+.obs-count {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.disease-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.disease-dot.healthy {
+  background: var(--green);
+}
+
+.disease-dot.diseased {
+  background: var(--berry);
+}
+
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.legend-dot.empty {
+  background: var(--track);
+  border: 1px solid var(--line);
+}
+
+.legend-dot.healthy {
+  background: var(--green);
+}
+
+.legend-dot.diseased {
+  background: var(--berry);
+}
+
+@media (max-width: 640px) {
+  .calendar-grid {
+    gap: 6px;
+  }
+
+  .calendar-day {
+    min-height: 60px;
+    padding: 6px;
+  }
+
+  .day-number {
+    font-size: 12px;
+  }
+
+  .obs-count {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+
+  .calendar-legend {
+    gap: 12px;
+  }
+}

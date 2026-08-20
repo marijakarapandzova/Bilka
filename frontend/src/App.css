@@ -1,0 +1,67 @@
+:root {
+  --bg: #F5F9F0;
+  --card: #FFFFFF;
+  --ink: #22301F;
+  --ink-soft: #66765F;
+  --green: #5FA758;
+  --green-deep: #3F7C3F;
+  --green-pale: #E3F1DC;
+  --lavender: #B9AEE0;
+  --lavender-soft: #EEEAF9;
+  --butter: #EFC94C;
+  --butter-soft: #FBF1D3;
+  --sky: #97C9D6;
+  --sky-soft: #E4F2F5;
+  --berry: #C15C74;
+  --berry-soft: #F7E1E6;
+  --line: #E1E8DA;
+  --track: #EAF0E4;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+}
+
+.app {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 36px 32px 80px 32px;
+}
+
+.loading, .empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 16px;
+  color: var(--ink-soft);
+}
+
+.footer-stamp {
+  margin-top: 34px;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--green-deep);
+}
+
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--ink-soft);
+  margin: 0 0 18px 2px;
+}
+
+@media (max-width: 640px) {
+  .wrap { padding: 26px 18px 60px 18px; }
+}

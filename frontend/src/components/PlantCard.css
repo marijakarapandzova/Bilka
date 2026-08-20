@@ -1,0 +1,363 @@
+.card {
+  background: var(--card);
+  border-radius: 26px;
+  padding: 22px 22px 20px 22px;
+  box-shadow: 0 4px 18px rgba(63, 124, 63, 0.08);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 26px rgba(63, 124, 63, 0.14);
+  }
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--green-deep);
+  outline-offset: 2px;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  gap: 8px;
+}
+
+.card-top-actions {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.badge svg {
+  width: 60%;
+  height: 60%;
+}
+
+.badge-green {
+  background: var(--green-pale);
+}
+
+.badge-lavender {
+  background: var(--lavender-soft);
+}
+
+.badge-butter {
+  background: var(--butter-soft);
+}
+
+.badge-sky {
+  background: var(--sky-soft);
+}
+
+.room-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  padding: 5px 11px;
+  border-radius: 20px;
+  color: var(--ink-soft);
+  background: var(--track);
+  white-space: nowrap;
+}
+
+.card-name {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 23px;
+  margin: 0 0 2px 0;
+}
+
+.card-species {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+
+.water-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  color: var(--ink-soft);
+  justify-content: space-between;
+}
+
+.water-row svg {
+  flex-shrink: 0;
+  color: var(--berry);
+}
+
+.water-status {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.water-status.urgent {
+  color: var(--berry);
+  font-weight: 600;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.water-btn {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1.5px solid var(--green);
+  background: var(--green-pale);
+  color: var(--green-deep);
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.water-btn:hover {
+  background: var(--green);
+  color: white;
+}
+
+.health-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.health-label .status {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.health-label .score {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.bar-track {
+  height: 8px;
+  background: var(--track);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.3s ease;
+}
+
+.fill-green {
+  background: var(--green);
+}
+
+.fill-butter {
+  background: var(--butter);
+}
+
+.fill-berry {
+  background: var(--berry);
+}
+
+.score-green {
+  color: var(--green-deep);
+}
+
+.score-butter {
+  color: #9C7E14;
+}
+
+.score-berry {
+  color: var(--berry);
+}
+
+.card-action-btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card-action-btn:hover {
+  background: var(--green-pale);
+  border-color: var(--green);
+  color: var(--green-deep);
+}
+
+.card-action-btn:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 18px 18px 16px 18px;
+  }
+
+  .card-name {
+    font-size: 20px;
+  }
+
+  .water-row {
+    font-size: 12px;
+  }
+}
+.card-photo {
+  margin: -22px -22px 14px -22px;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 26px 26px 0 0;
+  background: var(--bg);
+}
+
+.card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-date {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.card-action-btn {
+  flex: 1;
+  min-width: 50px;
+  padding: 7px 10px;
+  border: 1.5px solid;
+  background: var(--bg);
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.card-action-btn:active {
+  transform: scale(0.98);
+}
+
+.log-btn {
+  flex: 1.2;
+  color: var(--green-deep);
+  border-color: var(--green);
+  background: var(--green-pale);
+}
+
+.log-btn:hover {
+  background: var(--green);
+  color: white;
+  border-color: var(--green-deep);
+}
+
+.info-btn {
+  flex: 1;
+  color: var(--ink);
+  border-color: var(--line);
+  background: var(--bg);
+}
+
+.info-btn:hover {
+  background: var(--green-pale);
+  border-color: var(--green);
+  color: var(--green-deep);
+}
+
+.icon-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1.5px solid;
+  background: var(--bg);
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-btn:active {
+  transform: scale(0.95);
+}
+
+.share-btn.icon-btn {
+  color: var(--green);
+  border-color: var(--green);
+  background: white;
+}
+
+.share-btn.icon-btn:hover {
+  background: var(--green);
+  color: white;
+}
+
+.delete-btn.icon-btn {
+  color: var(--berry);
+  border-color: var(--berry);
+  background: var(--berry-pale);
+}
+
+.delete-btn.icon-btn:hover {
+  background: var(--berry);
+  color: white;
+}

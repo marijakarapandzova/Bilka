@@ -1,0 +1,66 @@
+{
+  "realm": "finki-services",
+  "displayName": "FINKI Services",
+  "enabled": true,
+  "users": [
+    {
+      "username": "ben",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Ben",
+      "lastName": "Developer",
+      "email": "ben@springframework.org",
+      "requiredActions": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "benpassword",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["service.admin"]
+    },
+    {
+      "username": "bob",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Bob",
+      "lastName": "Developer",
+      "email": "bob@springframework.org",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "bobspassword"
+        }
+      ],
+      "realmRoles": ["service.user"]
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "service.user",
+        "description": "Regular user"
+      },
+      {
+        "name": "service.admin",
+        "description": "Administrator"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "gateway-tester",
+      "name": "Gateway Tester",
+      "description": "Test client for API Gateway",
+      "enabled": true,
+      "publicClient": false,
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000", "http://localhost:8000"],
+      "secret": "fxp6CM5F28RKPdXLvqKONTU7kNmpRaA9",
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "protocol": "openid-connect"
+    }
+  ]
+}

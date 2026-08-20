@@ -1,0 +1,87 @@
+spring:
+  application:
+    name: health-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/healthpulse
+    username: healthpulse
+    password: healthpulse
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  batch:
+    job:
+      enabled: false # jobs are launched explicitly by the scheduler, not on every app boot
+    jdbc:
+      initialize-schema: always
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: health-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: true
+      properties:
+        spring.json.trusted.packages: "*"
+
+  cloud:
+    consul:
+      host: ${SPRING_CLOUD_CONSUL_HOST:localhost}
+      port: ${SPRING_CLOUD_CONSUL_PORT:8500}
+      config:
+        enabled: false
+      discovery:
+        prefer-ip-address: true
+        service-name: health-service
+        instance-id: health-service-${random.value}
+        health-check-path: /actuator/health
+        health-check-interval: 15s
+        register-health-check: false
+        port: 8082
+
+server:
+  port: 8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+plantpulse:
+  jwt:
+    # Must match plant-service's signing secret: both services trust the same
+    # tokens, but health-service only ever *reads* the userId claim — it never
+    # issues tokens itself.
+    secret: ${JWT_SECRET:this-is-a-very-long-development-only-secret-key-please-change-this-in-production-for-security}
+  health:
+    # Care & health-intelligence tuning knobs
+    reminder-cron: ${REMINDER_CRON:0 0 8 * * *}          # daily 08:00 - watering reminders
+    decay-cron: ${DECAY_CRON:0 15 2 * * *}                # daily 02:15 - health-score upkeep for stale plants
+    outbreak-sweep-cron: ${OUTBREAK_SWEEP_CRON:0 */30 * * * *} # every 30 min - regional outbreak sweep
+    outbreak-window-days: 7
+    outbreak-min-affected-plants: 3
+    outbreak-min-match-percentage: 55
+    decay-grace-period-days: 5
+    decay-points-per-day: 2

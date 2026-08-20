@@ -1,0 +1,57 @@
+version: 1
+
+# Groups
+dn: ou=groups,dc=springframework,dc=org
+objectClass: organizationalUnit
+ou: groups
+
+# People
+dn: ou=people,dc=springframework,dc=org
+objectClass: organizationalUnit
+ou: people
+
+# Users
+dn: uid=ben,ou=people,dc=springframework,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Ben Smith
+sn: Smith
+uid: ben
+mail: ben@springframework.org
+userPassword: benspassword
+
+dn: uid=bob,ou=people,dc=springframework,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Bob Jones
+sn: Jones
+uid: bob
+mail: bob@springframework.org
+userPassword: bobspassword
+
+dn: uid=test,ou=people,dc=springframework,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Test User
+sn: User
+uid: test
+mail: test@springframework.org
+userPassword: testpassword
+
+# Groups
+dn: cn=developers,ou=groups,dc=springframework,dc=org
+objectClass: groupOfUniqueNames
+cn: developers
+uniqueMember: uid=ben,ou=people,dc=springframework,dc=org
+uniqueMember: uid=bob,ou=people,dc=springframework,dc=org
+
+dn: cn=managers,ou=groups,dc=springframework,dc=org
+objectClass: groupOfUniqueNames
+cn: managers
+uniqueMember: uid=ben,ou=people,dc=springframework,dc=org

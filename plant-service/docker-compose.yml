@@ -1,0 +1,47 @@
+version: "3.8"
+
+networks:
+  shared_net:
+    name: bilka_shared_net
+    external: true
+
+volumes:
+  postgres-data:
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: plantpulse-postgres
+    environment:
+      POSTGRES_DB: plantpulse
+      POSTGRES_USER: plantpulse
+      POSTGRES_PASSWORD: plantpulse
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - shared_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U plantpulse"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  plant-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: plant_service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/plantpulse
+      SPRING_DATASOURCE_USERNAME: plantpulse
+      SPRING_DATASOURCE_PASSWORD: plantpulse
+    networks:
+      - shared_net
+    depends_on:
+      postgres:
+        condition: service_healthy

@@ -1,0 +1,70 @@
+
+
+spring:
+  application:
+    name: plant-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/plantpulse
+    username: plantpulse
+    password: plantpulse
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: true
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      config:
+        enabled: false
+      discovery:
+        prefer-ip-address: true
+        service-name: plant-service
+        instance-id: plant-service-${random.value}
+        health-check-path: /actuator/health
+        health-check-interval: 15s
+        register-health-check: false
+        port: 8081
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+plantpulse:
+  jwt:
+    secret: ${JWT_SECRET:this-is-a-very-long-development-only-secret-key-please-change-this-in-production-for-security}
+    expiration-ms: 86400000
+  trefle:
+    api-key: ${TREFLE_API_KEY:usr-XPP5iku8GPiy70azS6yfC9wEFzneWewbvKPnsvzuH9o}
+    base-url: https://trefle.io/api/v1
+  perenual:
+    api-key: ${PERENUAL_API_KEY:sk-hXZO6a52a40a4a23218726}
+  plantid:
+    api-key: ${PLANT_ID_API_KEY:}
+    api-url: https://api.plant.id/v2/identify
