@@ -1,13 +1,12 @@
 package com.plantpulse.plantservice.infrastructure.messaging
 
 import com.plantpulse.plantservice.domain.plant.PlantId
-import com.plantpulse.plantservice.infrastructure.messaging.events.PlantAddedEvent
-import com.plantpulse.plantservice.infrastructure.messaging.events.ObservationLoggedEvent
-import com.plantpulse.plantservice.infrastructure.messaging.events.PlantWateredEvent
-import com.plantpulse.plantservice.infrastructure.messaging.events.PlantRemovedEvent
+import com.plantpulse.plantservice.infrastructure.messaging.PlantAddedEvent
+import com.plantpulse.plantservice.infrastructure.messaging.ObservationLoggedEvent
+import com.plantpulse.plantservice.infrastructure.messaging.PlantWateredEvent
+import com.plantpulse.plantservice.infrastructure.messaging.PlantRemovedEvent
 import io.github.springwolf.core.asyncapi.annotations.AsyncPublisher
 import io.github.springwolf.core.asyncapi.annotations.AsyncOperation
-import io.github.springwolf.kafka.annotation.KafkaAsyncOperationBinding
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -41,7 +40,6 @@ class KafkaEventDocumentation {
             payloadType = PlantAddedEvent::class
         )
     )
-    @KafkaAsyncOperationBinding
     fun plantAdded(payload: PlantAddedEvent) {
         // This method is never called - it exists only for documentation
     }
@@ -62,7 +60,6 @@ class KafkaEventDocumentation {
             payloadType = ObservationLoggedEvent::class
         )
     )
-    @KafkaAsyncOperationBinding
     fun observationLogged(payload: ObservationLoggedEvent) {
         // This method is never called - it exists only for documentation
     }
@@ -83,7 +80,6 @@ class KafkaEventDocumentation {
             payloadType = PlantWateredEvent::class
         )
     )
-    @KafkaAsyncOperationBinding
     fun plantWatered(payload: PlantWateredEvent) {
         // This method is never called - it exists only for documentation
     }
@@ -104,7 +100,6 @@ class KafkaEventDocumentation {
             payloadType = PlantRemovedEvent::class
         )
     )
-    @KafkaAsyncOperationBinding
     fun plantRemoved(payload: PlantRemovedEvent) {
         // This method is never called - it exists only for documentation
     }

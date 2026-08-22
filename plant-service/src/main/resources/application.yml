@@ -29,8 +29,8 @@ spring:
 
   cloud:
     consul:
-      host: localhost
-      port: 8500
+      host: ${SPRING_CLOUD_CONSUL_HOST:localhost}
+      port: ${SPRING_CLOUD_CONSUL_PORT:8500}
       config:
         enabled: false
       discovery:
@@ -39,8 +39,8 @@ spring:
         instance-id: plant-service-${random.value}
         health-check-path: /actuator/health
         health-check-interval: 15s
-        register-health-check: false
-        port: 8081
+        register-health-check: true
+        port: ${server.port:8081}
 
 server:
   port: 8081

@@ -45,7 +45,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: healthpulse
       JWT_SECRET: ${JWT_SECRET:-this-is-a-very-long-development-only-secret-key-please-change-this-in-production-for-security}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: broker:29092
-      PLANT_SERVICE_URL: http://plant_service:8081
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
     volumes:
       - ../Indoor_Plant_Health_and_Growth_Factors.csv:/app/Indoor_Plant_Health_and_Growth_Factors.csv
     networks:

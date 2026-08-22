@@ -50,8 +50,8 @@ spring:
         instance-id: health-service-${random.value}
         health-check-path: /actuator/health
         health-check-interval: 15s
-        register-health-check: false
-        port: 8082
+        register-health-check: true
+        port: ${server.port:8082}
     openfeign:
       client:
         config:
@@ -64,13 +64,9 @@ spring:
         group:
           enabled: true
 
-  # Feign Client URL Configuration
-  # Base URLs for downstream services that health-service calls synchronously
+  # Feign Client Configuration
+  # Consul service discovery handles URL resolution; no hardcoded URLs needed
 feign:
-  plant-service:
-    url: ${PLANT_SERVICE_URL:http://plant-service:8081}
-    connect-timeout-ms: 3000
-    read-timeout-ms: 5000
   compression:
     request:
       enabled: true

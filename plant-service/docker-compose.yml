@@ -43,6 +43,22 @@ services:
       timeout: 5s
       retries: 5
 
+  # Consul Service Registry and Discovery
+  consul:
+    image: hashicorp/consul:1.18
+    container_name: consul
+    command: "agent -dev -client=0.0.0.0 -ui"
+    ports:
+      - "8500:8500"        # HTTP API and UI
+      - "8600:8600/udp"    # DNS interface
+    networks:
+      - shared_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8500/v1/status/leader || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   postgres:
     image: postgres:16
     container_name: plantpulse-postgres
@@ -75,6 +91,8 @@ services:
       SPRING_DATASOURCE_USERNAME: plantpulse
       SPRING_DATASOURCE_PASSWORD: plantpulse
       SPRING_KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
     networks:
       - plantpulse_services_net
       - shared_net
@@ -82,4 +100,6 @@ services:
       postgres:
         condition: service_healthy
       broker:
+        condition: service_healthy
+      consul:
         condition: service_healthy

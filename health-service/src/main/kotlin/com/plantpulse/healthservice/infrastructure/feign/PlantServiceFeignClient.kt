@@ -30,7 +30,6 @@ import java.util.UUID
  */
 @FeignClient(
     name = "plant-service",
-    url = "\${feign.plant-service.url:http://plant-service:8081}",
     fallback = PlantServiceFallback::class,
     configuration = [PlantServiceFeignClientConfig::class]
 )
