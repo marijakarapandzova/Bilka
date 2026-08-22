@@ -5,6 +5,7 @@ import com.plantpulse.plantservice.api.plant.AddPlantManualRequest
 import com.plantpulse.plantservice.api.plant.PlantResponse
 import com.plantpulse.plantservice.api.plant.UpdatePlantRequest
 import com.plantpulse.plantservice.domain.plant.Plant
+import com.plantpulse.plantservice.domain.plant.PlantId
 import com.plantpulse.plantservice.domain.plant.PlantRepository
 import com.plantpulse.plantservice.domain.species.Species
 import com.plantpulse.plantservice.domain.species.SpeciesRepository
@@ -89,7 +90,7 @@ class PlantService(
         val plant = findOwnedPlant(plantId, userId)
         plantRepository.delete(plant)
         try {
-            eventPublisher.publishPlantRemoved(PlantRemovedEvent(plantId = plant.id, userId = userId))
+            eventPublisher.publishPlantRemoved(PlantRemovedEvent(plantId = PlantId(plant.id), userId = userId))
         } catch (ex: Exception) {
             // Kafka not available - continue anyway for testing
         }
@@ -119,7 +120,7 @@ class PlantService(
         try {
             eventPublisher.publishPlantAdded(
                 PlantAddedEvent(
-                    plantId = saved.id,
+                    plantId = PlantId(saved.id),
                     userId = userId,
                     speciesId = species.id,
                     wateringFrequencyDays = species.wateringFrequencyDays

@@ -1,5 +1,3 @@
-version: "3.8"
-
 networks:
   shared_net:
     name: bilka_shared_net
@@ -9,6 +7,7 @@ volumes:
   health-postgres-data:
 
 services:
+  # PostgreSQL Database (health-service uses its own DB instance)
   health-postgres:
     image: postgres:16
     container_name: healthpulse-postgres
@@ -28,6 +27,7 @@ services:
       timeout: 5s
       retries: 5
 
+  # Health Service App (Kafka broker is managed by plant-service)
   health-service:
     build:
       context: .
@@ -41,6 +41,7 @@ services:
       SPRING_DATASOURCE_USERNAME: healthpulse
       SPRING_DATASOURCE_PASSWORD: healthpulse
       JWT_SECRET: ${JWT_SECRET:-this-is-a-very-long-development-only-secret-key-please-change-this-in-production-for-security}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: broker:29092
     volumes:
       - ../Indoor_Plant_Health_and_Growth_Factors.csv:/app/Indoor_Plant_Health_and_Growth_Factors.csv
     networks:

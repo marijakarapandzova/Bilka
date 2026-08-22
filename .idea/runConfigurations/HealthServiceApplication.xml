@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="HealthServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.plantpulse.healthservice.HealthServiceApplication" />
+    <option name="VM_PARAMETERS" value="-Dspring.profiles.active=dev" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/health-service" />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" />
+    </method>
+  </configuration>
+</component>

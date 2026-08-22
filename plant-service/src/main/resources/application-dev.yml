@@ -17,6 +17,14 @@ spring:
       hibernate:
         format_sql: true
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      acks: all
+    consumer:
+      group-id: plant-service-group
+      auto-offset-reset: earliest
+
   cloud:
     consul:
       enabled: false
@@ -36,6 +44,12 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
+
+logging:
+  level:
+    root: INFO
+    com.plantpulse.plantservice.infrastructure.messaging: DEBUG
+    org.springframework.kafka: INFO
 
 plantpulse:
   jwt:

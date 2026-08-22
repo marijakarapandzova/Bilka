@@ -39,24 +39,19 @@ class PlantHealthEventHandler(
     fun onPlantAdded(event: PlantAddedEvent) {
         val existing = profileRepository.findById(event.plantId).orElse(null)
         val profile = existing?.also {
-            it.speciesName = event.speciesName
-            it.nickname = event.nickname
             it.wateringFrequencyDays = event.wateringFrequencyDays
-            it.cityLocation = event.cityLocation
-            it.latitude = event.latitude
-            it.longitude = event.longitude
             it.active = true
         } ?: PlantHealthProfile(
             id = event.plantId,
             userId = event.userId,
             speciesId = event.speciesId,
-            speciesName = event.speciesName,
-            nickname = event.nickname,
-            cityLocation = event.cityLocation,
-            latitude = event.latitude,
-            longitude = event.longitude,
+            speciesName = "Unknown",  // External event doesn't provide this
+            nickname = "Plant",       // External event doesn't provide this
+            cityLocation = null,
+            latitude = null,
+            longitude = null,
             wateringFrequencyDays = event.wateringFrequencyDays,
-            addedAt = event.addedAt
+            addedAt = java.time.Instant.now()
         )
         profileRepository.save(profile)
 
@@ -75,7 +70,7 @@ class PlantHealthEventHandler(
                 )
             )
         }
-        log.info("Plant health profile upserted for plant {}", event.plantId)
+        log.info("Plant health profile created for plant {}", event.plantId)
     }
 
     @Transactional
@@ -85,7 +80,7 @@ class PlantHealthEventHandler(
             log.warn("Ignoring PlantWateredEvent for unknown plant {}", event.plantId)
             return
         }
-        profile.markWatered(event.wateredAt)
+        profile.markWatered(java.time.Instant.now())
         profileRepository.save(profile)
     }
 
@@ -111,10 +106,9 @@ class PlantHealthEventHandler(
         // Location can change/arrive after the plant was added (e.g. user sets city later).
         if (event.cityLocation != null) {
             profile.cityLocation = event.cityLocation
-            profile.latitude = event.latitude
-            profile.longitude = event.longitude
         }
 
+        val now = java.time.Instant.now()
         val previousSnapshot = snapshotRepository.findTopByPlantIdOrderByRecordedAtDesc(event.plantId)
         val newScore = scoreCalculator.scoreForDiseaseMatch(event.diseaseMatchName, event.diseaseMatchPercentage)
         val newStatus = scoreCalculator.deriveStatus(newScore, previousSnapshot)
@@ -124,8 +118,8 @@ class PlantHealthEventHandler(
             status = newStatus,
             diseaseName = event.diseaseMatchName,
             diseaseMatchPercentage = event.diseaseMatchPercentage,
-            soilWaterlogged = event.soilMoisture.equals("WATERLOGGED", ignoreCase = true),
-            observedAt = event.loggedAt
+            soilWaterlogged = false,  // External event doesn't provide soil info
+            observedAt = now
         )
         profileRepository.save(profile)
 
@@ -139,7 +133,7 @@ class PlantHealthEventHandler(
                 diseaseMatchPercentage = event.diseaseMatchPercentage,
                 cityLocation = profile.cityLocation,
                 source = SnapshotSource.OBSERVATION,
-                recordedAt = event.loggedAt
+                recordedAt = now
             )
         )
 
@@ -149,7 +143,7 @@ class PlantHealthEventHandler(
             !event.diseaseMatchName.equals("Healthy", ignoreCase = true) &&
             event.diseaseMatchPercentage >= properties.outbreakMinMatchPercentage
         ) {
-            outbreakDetectionService.checkCityForDisease(profile.cityLocation!!, event.diseaseMatchName, event.loggedAt)
+            outbreakDetectionService.checkCityForDisease(profile.cityLocation!!, event.diseaseMatchName, now)
         }
     }
 
@@ -159,7 +153,7 @@ class PlantHealthEventHandler(
         newStatus: HealthStatus,
         event: ObservationLoggedEvent
     ) {
-        val today = event.loggedAt.toString().substring(0, 10)
+        val today = java.time.LocalDate.now().toString()
 
         if (!event.diseaseMatchName.equals("Healthy", ignoreCase = true) &&
             event.diseaseMatchPercentage >= properties.diseaseAlertMinMatchPercentage
@@ -171,7 +165,7 @@ class PlantHealthEventHandler(
                 type = NotificationType.DISEASE_ALERT,
                 title = "${profile.nickname} may have ${event.diseaseMatchName}",
                 message = "Symptoms match: ${event.diseaseMatchPercentage}%\n\nWhat to do:\n$steps",
-                dedupeKey = "DISEASE:${profile.id}:${event.observationId}"
+                dedupeKey = "DISEASE:${profile.id}:${today}"
             )
         }
 

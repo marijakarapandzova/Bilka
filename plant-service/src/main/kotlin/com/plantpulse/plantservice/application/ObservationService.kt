@@ -6,6 +6,7 @@ import com.plantpulse.plantservice.api.observation.ObservationResponse
 import com.plantpulse.plantservice.domain.disease.SymptomMatcher
 import com.plantpulse.plantservice.domain.observation.Observation
 import com.plantpulse.plantservice.domain.observation.ObservationRepository
+import com.plantpulse.plantservice.domain.plant.PlantId
 import com.plantpulse.plantservice.domain.plant.PlantRepository
 import com.plantpulse.plantservice.domain.user.UserRepository
 import com.plantpulse.plantservice.infrastructure.messaging.ObservationLoggedEvent
@@ -67,7 +68,7 @@ class ObservationService(
             eventPublisher.publishObservationLogged(
                 ObservationLoggedEvent(
                     observationId = saved.id,
-                    plantId = plantId,
+                    plantId = PlantId(plantId),
                     userId = userId,
                     diseaseMatchName = diseaseMatch.diseaseName,
                     diseaseMatchPercentage = diseaseMatch.matchPercentage,

@@ -9,11 +9,17 @@ spring:
     show-sql: true
 
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9094}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 
   cloud:
     consul:
       enabled: false
+
+logging:
+  level:
+    root: INFO
+    com.plantpulse.healthservice.infrastructure.messaging: DEBUG
+    org.springframework.kafka: INFO
 
 server:
   port: 8082
