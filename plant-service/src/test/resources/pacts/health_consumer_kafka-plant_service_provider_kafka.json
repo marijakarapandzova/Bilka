@@ -1,0 +1,60 @@
+{
+  "consumer": {
+    "name": "health_consumer_kafka"
+  },
+  "provider": {
+    "name": "plant_service_provider_kafka"
+  },
+  "interactions": [
+    {
+      "description": "Plant Added Event",
+      "providerState": null,
+      "contents": {
+        "contentType": "application/json",
+        "content": {
+          "plantId": "550e8400-e29b-41d4-a716-446655440000",
+          "userId": "770e8400-e29b-41d4-a716-446655440000",
+          "speciesId": "660e8400-e29b-41d4-a716-446655440000",
+          "wateringFrequencyDays": 7
+        }
+      },
+      "type": "Asynchronous/Messages"
+    },
+    {
+      "description": "Observation Logged Event",
+      "providerState": null,
+      "contents": {
+        "contentType": "application/json",
+        "content": {
+          "plantId": "550e8400-e29b-41d4-a716-446655440000",
+          "userId": "770e8400-e29b-41d4-a716-446655440000",
+          "diseaseMatchName": "Leaf Spot",
+          "diseaseMatchPercentage": 85,
+          "cityLocation": "Skopje"
+        }
+      },
+      "type": "Asynchronous/Messages"
+    },
+    {
+      "description": "Plant Removed Event",
+      "providerState": null,
+      "contents": {
+        "contentType": "application/json",
+        "content": {
+          "plantId": "550e8400-e29b-41d4-a716-446655440000",
+          "userId": "770e8400-e29b-41d4-a716-446655440000"
+        }
+      },
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "client": {
+      "name": "au.com.dius.pact-jvm-consumer-junit5_2.12",
+      "version": "3.6.3"
+    }
+  }
+}

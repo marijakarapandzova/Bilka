@@ -200,6 +200,31 @@
             <artifactId>kotlin-test-junit5</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Pact JVM: Consumer-Driven Contracts Testing -->
+        <!-- Consumer side: mock HTTP server + message DSL for contract definition -->
+        <dependency>
+            <groupId>au.com.dius</groupId>
+            <artifactId>pact-jvm-consumer-junit5_2.12</artifactId>
+            <version>3.6.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Provider side: verifies contracts against running app -->
+        <dependency>
+            <groupId>au.com.dius</groupId>
+            <artifactId>pact-jvm-provider-junit5</artifactId>
+            <version>4.0.10</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Required by pact-jvm internals on JDK 17+ -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>3.0.17</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

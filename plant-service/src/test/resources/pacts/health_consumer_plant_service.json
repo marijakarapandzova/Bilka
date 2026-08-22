@@ -1,0 +1,81 @@
+{
+  "consumer": {
+    "name": "health_consumer_plant_service"
+  },
+  "provider": {
+    "name": "plant_service_provider"
+  },
+  "interactions": [
+    {
+      "description": "A request to validate plant exists",
+      "request": {
+        "method": "GET",
+        "path": "/api/plants/550e8400-e29b-41d4-a716-446655440000"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": "550e8400-e29b-41d4-a716-446655440000",
+          "speciesId": "660e8400-e29b-41d4-a716-446655440000",
+          "speciesName": "Monstera Deliciosa",
+          "nickname": "My Monstera",
+          "wateringFrequencyDays": 7,
+          "addedAt": "2026-08-22T10:30:00Z"
+        }
+      },
+      "providerState": "Plant with ID 550e8400-e29b-41d4-a716-446655440000 exists"
+    },
+    {
+      "description": "A request to fetch species details",
+      "request": {
+        "method": "GET",
+        "path": "/api/species/660e8400-e29b-41d4-a716-446655440000"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": "660e8400-e29b-41d4-a716-446655440000",
+          "name": "Monstera Deliciosa",
+          "scientificName": "Monstera deliciosa",
+          "wateringFrequencyDays": 7,
+          "careDifficulty": "MEDIUM"
+        }
+      },
+      "providerState": "Species with ID 660e8400-e29b-41d4-a716-446655440000 exists"
+    },
+    {
+      "description": "A request to validate plant ownership",
+      "request": {
+        "method": "GET",
+        "path": "/api/plants/550e8400-e29b-41d4-a716-446655440000/validate",
+        "query": "userId=770e8400-e29b-41d4-a716-446655440000"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "valid": true,
+          "message": "Plant belongs to user"
+        }
+      },
+      "providerState": "Plant 550e8400-e29b-41d4-a716-446655440000 belongs to user 770e8400-e29b-41d4-a716-446655440000"
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    },
+    "client": {
+      "name": "au.com.dius.pact-jvm-consumer-junit5_2.12",
+      "version": "3.6.3"
+    }
+  }
+}
