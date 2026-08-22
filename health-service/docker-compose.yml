@@ -1,4 +1,7 @@
 networks:
+  healthpulse_services_net:
+    name: healthpulse_services_net
+    driver: bridge
   shared_net:
     name: bilka_shared_net
     external: true
@@ -20,7 +23,7 @@ services:
     volumes:
       - health-postgres-data:/var/lib/postgresql/data
     networks:
-      - shared_net
+      - healthpulse_services_net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U healthpulse"]
       interval: 10s
@@ -36,15 +39,17 @@ services:
     ports:
       - "9001:8082"
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://health-postgres:5432/healthpulse
       SPRING_DATASOURCE_USERNAME: healthpulse
       SPRING_DATASOURCE_PASSWORD: healthpulse
       JWT_SECRET: ${JWT_SECRET:-this-is-a-very-long-development-only-secret-key-please-change-this-in-production-for-security}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      PLANT_SERVICE_URL: http://plant_service:8081
     volumes:
       - ../Indoor_Plant_Health_and_Growth_Factors.csv:/app/Indoor_Plant_Health_and_Growth_Factors.csv
     networks:
+      - healthpulse_services_net
       - shared_net
     depends_on:
       health-postgres:

@@ -61,6 +61,22 @@ springdoc:
     enabled: true
     path: /swagger-ui.html
 
+# AsyncAPI / Springwolf Configuration for Kafka Events Documentation
+springwolf:
+  enabled: true
+  docket:
+    base-package: com.plantpulse.plantservice
+    info:
+      title: Plant Service Events
+      version: 1.0.0
+      description: AsyncAPI documentation for Kafka events published by Plant Service
+      contact:
+        name: PlantPulse Team
+    servers:
+      kafka:
+        protocol: kafka
+        host: ${spring.kafka.bootstrap-servers}
+
 plantpulse:
   jwt:
     secret: ${JWT_SECRET:this-is-a-very-long-development-only-secret-key-please-change-this-in-production-for-security}

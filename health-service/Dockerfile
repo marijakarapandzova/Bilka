@@ -1,14 +1,22 @@
-# Build stage
-FROM eclipse-temurin:17-jdk-jammy as builder
-WORKDIR /build
-COPY pom.xml .
-COPY src ./src
-RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
-RUN echo "Starting Maven build..." && mvn clean package -DskipTests
+# syntax=docker/dockerfile:1.7
 
-# Runtime stage
-FROM eclipse-temurin:17-jre-jammy
+# === Stage 1: Build with Maven ===
+FROM maven:3.9-eclipse-temurin-17 AS build
+WORKDIR /workspace
+
+# Copy pom.xml and download dependencies (cached separately from source)
+COPY pom.xml ./
+RUN --mount=type=cache,target=/root/.m2 mvn -q -B dependency:go-offline
+
+# Copy source code and build the JAR
+COPY src ./src
+RUN --mount=type=cache,target=/root/.m2 mvn -q -B -DskipTests package \
+    && cp target/*.jar /workspace/app.jar
+
+# === Stage 2: Runtime with JRE ===
+FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY --from=builder /build/target/health-service-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /workspace/app.jar app.jar
+
 EXPOSE 8082
-ENTRYPOINT ["java", "-XX:+ExitOnOutOfMemoryError", "-XX:+UseContainerSupport", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java","-jar","/app/app.jar"]

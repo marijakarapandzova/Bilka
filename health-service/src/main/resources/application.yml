@@ -121,6 +121,22 @@ springdoc:
     enabled: true
     path: /swagger-ui.html
 
+# AsyncAPI / Springwolf Configuration for Kafka Events Documentation
+springwolf:
+  enabled: true
+  docket:
+    base-package: com.plantpulse.healthservice
+    info:
+      title: Health Service Events
+      version: 1.0.0
+      description: AsyncAPI documentation for Kafka events published by Health Service
+      contact:
+        name: PlantPulse Team
+    servers:
+      kafka:
+        protocol: kafka
+        host: ${spring.kafka.bootstrap-servers}
+
 plantpulse:
   jwt:
     # Must match plant-service's signing secret: both services trust the same

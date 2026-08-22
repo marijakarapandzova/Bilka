@@ -1,9 +1,12 @@
 version: "3.8"
 
 networks:
+  plantpulse_services_net:
+    name: plantpulse_services_net
+    driver: bridge
   shared_net:
     name: bilka_shared_net
-    external: true
+    driver: bridge
 
 volumes:
   postgres-data:
@@ -52,7 +55,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - shared_net
+      - plantpulse_services_net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U plantpulse"]
       interval: 10s
@@ -67,12 +70,13 @@ services:
     ports:
       - "8081:8081"
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/plantpulse
       SPRING_DATASOURCE_USERNAME: plantpulse
       SPRING_DATASOURCE_PASSWORD: plantpulse
       SPRING_KAFKA_BOOTSTRAP_SERVERS: broker:29092
     networks:
+      - plantpulse_services_net
       - shared_net
     depends_on:
       postgres:
