@@ -2,6 +2,9 @@ spring:
   application:
     name: health-service
 
+  main:
+    allow-bean-definition-overriding: true
+
   datasource:
     url: jdbc:postgresql://localhost:5432/healthpulse
     username: healthpulse
@@ -49,6 +52,55 @@ spring:
         health-check-interval: 15s
         register-health-check: false
         port: 8082
+    openfeign:
+      client:
+        config:
+          default:
+            logger-level: full
+      okhttp:
+        enabled: true
+      circuitbreaker:
+        enabled: true
+        group:
+          enabled: true
+
+  # Feign Client URL Configuration
+  # Base URLs for downstream services that health-service calls synchronously
+feign:
+  plant-service:
+    url: ${PLANT_SERVICE_URL:http://plant-service:8081}
+    connect-timeout-ms: 3000
+    read-timeout-ms: 5000
+  compression:
+    request:
+      enabled: true
+      min-request-size: 1024
+    response:
+      enabled: true
+
+# Resilience4j Circuit Breaker Configuration
+# Protects health-service from cascading failures when plant-service is unavailable
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        recordExceptions:
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - feign.FeignException$ServiceUnavailable
+          - feign.FeignException$GatewayTimeout
+        ignoreExceptions:
+          - feign.FeignException$NotFound
+    instances:
+      plant-service:
+        baseConfig: default
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30000    # 30 seconds
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 5
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2000   # 2 seconds
 
 server:
   port: 8082

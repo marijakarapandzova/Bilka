@@ -15,11 +15,33 @@ spring:
     consul:
       enabled: false
 
+# Development Feign Configuration
+# Faster timeouts for local testing
+feign:
+  plant-service:
+    url: http://localhost:8081
+    connect-timeout-ms: 2000
+    read-timeout-ms: 3000
+
+# Development Circuit Breaker Configuration
+# Faster failure detection for easier testing
+resilience4j:
+  circuitbreaker:
+    instances:
+      plant-service:
+        failureRateThreshold: 30       # Lower threshold for dev (fail faster)
+        waitDurationInOpenState: 10000  # 10 seconds (faster recovery testing)
+        minimumNumberOfCalls: 3        # Fewer calls needed to trigger
+
 logging:
   level:
     root: INFO
     com.plantpulse.healthservice.infrastructure.messaging: DEBUG
+    com.plantpulse.healthservice.infrastructure.feign: DEBUG
+    com.plantpulse.healthservice.config: DEBUG
     org.springframework.kafka: INFO
+    org.springframework.cloud.openfeign: DEBUG
+    io.github.resilience4j: DEBUG
 
 server:
   port: 8082

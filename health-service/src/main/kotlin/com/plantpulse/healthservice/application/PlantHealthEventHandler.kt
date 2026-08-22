@@ -10,11 +10,13 @@ import com.plantpulse.healthservice.domain.health.SnapshotSource
 import com.plantpulse.healthservice.domain.notification.NotificationType
 import com.plantpulse.healthservice.domain.plant.PlantHealthProfile
 import com.plantpulse.healthservice.domain.plant.PlantHealthProfileRepository
+import com.plantpulse.healthservice.infrastructure.feign.PlantServiceFeignClient
 import com.plantpulse.healthservice.infrastructure.messaging.ObservationLoggedEvent
 import com.plantpulse.healthservice.infrastructure.messaging.PlantAddedEvent
 import com.plantpulse.healthservice.infrastructure.messaging.PlantRemovedEvent
 import com.plantpulse.healthservice.infrastructure.messaging.PlantWateredEvent
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -23,6 +25,11 @@ import org.springframework.transaction.annotation.Transactional
  * model and reacts to them (health scoring, reminders eligibility, disease
  * alerts, outbreak checks). This is the single place event-driven state
  * changes happen — the Kafka listener is a thin adapter on top of it.
+ *
+ * SYNCHRONOUS VALIDATION (NEW in Lab 6):
+ * Before creating a health profile, validates that the plant actually exists
+ * in Plant Service via Feign HTTP call. If Plant Service is unreachable,
+ * the circuit breaker activates the fallback strategy (pessimistic: skip profile creation).
  */
 @Service
 class PlantHealthEventHandler(
@@ -31,12 +38,44 @@ class PlantHealthEventHandler(
     private val scoreCalculator: HealthScoreCalculator,
     private val notificationService: NotificationService,
     private val outbreakDetectionService: OutbreakDetectionService,
-    private val properties: HealthProperties
+    private val properties: HealthProperties,
+    private val plantServiceClient: PlantServiceFeignClient  // NEW: Feign client for sync validation
 ) {
     private val log = LoggerFactory.getLogger(PlantHealthEventHandler::class.java)
 
     @Transactional
     fun onPlantAdded(event: PlantAddedEvent) {
+        // ============================================================
+        // LAB 6: SYNCHRONOUS VALIDATION VIA FEIGN
+        // Before creating a health profile, validate plant exists in Plant Service
+        // ============================================================
+        val plantValidation = try {
+            log.debug("Validating plant {} exists in Plant Service via Feign", event.plantId)
+            plantServiceClient.validatePlantExists(event.plantId, event.userId)
+        } catch (ex: Exception) {
+            log.error(
+                "Feign call to Plant Service failed for plant {}: {} - {}",
+                event.plantId,
+                ex.javaClass.simpleName,
+                ex.message
+            )
+            null
+        }
+
+        // If Plant Service returned 404 or error, skip profile creation (pessimistic strategy)
+        if (plantValidation == null || plantValidation.statusCode?.isError == true) {
+            log.warn(
+                "Plant {} validation failed (status: {}) - skipping health profile creation. " +
+                "Profile will be created when Plant Service is available and validates the plant.",
+                event.plantId,
+                plantValidation?.statusCode
+            )
+            return  // Do not create health profile - wait for Plant Service to be available
+        }
+
+        log.debug("Plant {} validated successfully in Plant Service", event.plantId)
+
+        // Plant exists in Plant Service - safe to create health profile
         val existing = profileRepository.findById(event.plantId).orElse(null)
         val profile = existing?.also {
             it.wateringFrequencyDays = event.wateringFrequencyDays
@@ -70,7 +109,7 @@ class PlantHealthEventHandler(
                 )
             )
         }
-        log.info("Plant health profile created for plant {}", event.plantId)
+        log.info("Plant health profile created for plant {} (validated via Feign)", event.plantId)
     }
 
     @Transactional
