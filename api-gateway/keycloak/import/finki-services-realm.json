@@ -1,0 +1,88 @@
+{
+  "realm": "finki-services",
+  "enabled": true,
+  "displayName": "FINKI Services",
+  "accessCodeLifespan": 60,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "offlineSessionIdleTimeout": 2592000,
+  "clientScopeMappings": {},
+  "clients": [
+    {
+      "clientId": "gateway-tester",
+      "name": "Gateway Tester",
+      "description": "Test client for obtaining tokens via password grant",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "redirectUris": [
+        "http://localhost:*"
+      ],
+      "webOrigins": [
+        "http://localhost:*"
+      ],
+      "secret": "gateway-tester-secret-change-in-production"
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "service.user",
+        "description": "Regular service user",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "service.admin",
+        "description": "Service administrator",
+        "composite": false,
+        "clientRole": false
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "ben",
+      "email": "ben@example.com",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Ben",
+      "lastName": "Developer",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "benspassword",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {},
+      "realmRoles": [
+        "service.admin"
+      ]
+    },
+    {
+      "username": "alice",
+      "email": "alice@example.com",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Alice",
+      "lastName": "User",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "alicespassword",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {},
+      "realmRoles": [
+        "service.user"
+      ]
+    }
+  ]
+}

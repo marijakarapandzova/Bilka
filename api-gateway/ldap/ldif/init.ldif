@@ -1,0 +1,125 @@
+# LDAP Data Interchange Format (LDIF)
+# Bootstrap data for OpenLDAP
+# DN structure: dc=springframework,dc=org (created by osixia from LDAP_DOMAIN)
+
+# =====================================================
+# Organizational Units (OUs)
+# =====================================================
+
+dn: ou=groups,dc=springframework,dc=org
+objectClass: organizationalUnit
+ou: groups
+
+dn: ou=people,dc=springframework,dc=org
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=otherpeople,dc=springframework,dc=org
+objectClass: organizationalUnit
+ou: otherpeople
+
+# =====================================================
+# Users under ou=people
+# =====================================================
+
+dn: uid=ben,ou=people,dc=springframework,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: ben
+cn: Ben Developer
+sn: Developer
+mail: ben@example.com
+userPassword: {CLEAR}benspassword
+description: Administrator user
+
+dn: uid=bob,ou=people,dc=springframework,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: bob
+cn: Bob Smith
+sn: Smith
+mail: bob@example.com
+userPassword: {CLEAR}bobspassword
+description: Developer user
+
+dn: uid=test,ou=people,dc=springframework,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: test
+cn: Test User
+sn: User
+mail: test@example.com
+userPassword: {CLEAR}testpassword
+description: Test user
+
+dn: uid=joe,ou=people,dc=springframework,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: joe
+cn: Joe Manager
+sn: Manager
+mail: joe@example.com
+userPassword: {CLEAR}joepassword
+description: Manager user
+
+dn: uid=jerry,ou=people,dc=springframework,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: jerry
+cn: Jerry Operator
+sn: Operator
+mail: jerry@example.com
+userPassword: {CLEAR}jerrypassword
+description: Operator user
+
+# =====================================================
+# Users under ou=otherpeople
+# =====================================================
+
+dn: uid=alice,ou=otherpeople,dc=springframework,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+uid: alice
+cn: Alice Designer
+sn: Designer
+mail: alice@example.com
+userPassword: {CLEAR}alicespassword
+description: Designer user
+
+# =====================================================
+# Groups
+# =====================================================
+
+dn: cn=developers,ou=groups,dc=springframework,dc=org
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: developers
+description: Developer group
+uniqueMember: uid=ben,ou=people,dc=springframework,dc=org
+uniqueMember: uid=bob,ou=people,dc=springframework,dc=org
+
+dn: cn=managers,ou=groups,dc=springframework,dc=org
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: managers
+description: Managers group
+uniqueMember: uid=joe,ou=people,dc=springframework,dc=org
+
+dn: cn=operators,ou=groups,dc=springframework,dc=org
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: operators
+description: Operations group
+uniqueMember: uid=jerry,ou=people,dc=springframework,dc=org
