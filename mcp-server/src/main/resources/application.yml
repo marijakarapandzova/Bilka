@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: mcp-server
+
+  datasource:
+    url: jdbc:postgresql://localhost:5436/mcpserver
+    username: mcpserver
+    password: mcpserver
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  ai:
+    mcp:
+      server:
+        name: plantpulse-mcp-server
+        version: 0.0.1
+        type: SYNC
+        instructions: >
+          Tools for PlantPulse plant care. Start by calling plantpulse_login with the
+          user's PlantPulse email/password to get a session_token, then pass that
+          session_token to every other PlantPulse tool call in this conversation.
+        sse-message-endpoint: /mcp/message
+        sse-endpoint: /sse
+
+server:
+  port: 8085
+
+plantpulse:
+  plant-service-url: ${PLANT_SERVICE_URL:http://localhost:8081}
+  health-service-url: ${HEALTH_SERVICE_URL:http://localhost:8082}
+  reminder-cron: ${REMINDER_CRON:0 0 8 * * *}
+  token-encryption-key: ${MCP_TOKEN_ENCRYPTION_KEY:this-is-a-very-long-development-only-encryption-key-please-change-this-in-production}
+  slack:
+    client-id: ${SLACK_CLIENT_ID:}
+    client-secret: ${SLACK_CLIENT_SECRET:}
+    redirect-uri: ${SLACK_REDIRECT_URI:http://localhost:8085/slack/oauth/callback}
+  google:
+    client-id: ${GOOGLE_CLIENT_ID:}
+    client-secret: ${GOOGLE_CLIENT_SECRET:}
+    redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8085/google/oauth/callback}

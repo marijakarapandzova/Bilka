@@ -1,0 +1,56 @@
+version: "3.8"
+
+networks:
+  shared_net:
+    name: bilka_shared_net
+    external: true
+
+volumes:
+  mcp-postgres-data:
+
+services:
+  mcp-postgres:
+    image: postgres:16
+    container_name: mcp-server-postgres
+    environment:
+      POSTGRES_DB: mcpserver
+      POSTGRES_USER: mcpserver
+      POSTGRES_PASSWORD: mcpserver
+    ports:
+      - "5436:5432"
+    volumes:
+      - mcp-postgres-data:/var/lib/postgresql/data
+    networks:
+      - shared_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mcpserver"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mcp_server
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mcp-postgres:5432/mcpserver
+      SPRING_DATASOURCE_USERNAME: mcpserver
+      SPRING_DATASOURCE_PASSWORD: mcpserver
+      PLANT_SERVICE_URL: http://plant-service:8081
+      HEALTH_SERVICE_URL: http://health-service:8082
+      MCP_TOKEN_ENCRYPTION_KEY: ${MCP_TOKEN_ENCRYPTION_KEY:-this-is-a-very-long-development-only-encryption-key-please-change-this-in-production}
+      SLACK_CLIENT_ID: ${SLACK_CLIENT_ID:-}
+      SLACK_CLIENT_SECRET: ${SLACK_CLIENT_SECRET:-}
+      SLACK_REDIRECT_URI: ${SLACK_REDIRECT_URI:-http://localhost:8085/slack/oauth/callback}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-http://localhost:8085/google/oauth/callback}
+      REMINDER_CRON: ${REMINDER_CRON:-0 0 8 * * *}
+    networks:
+      - shared_net
+    depends_on:
+      mcp-postgres:
+        condition: service_healthy
