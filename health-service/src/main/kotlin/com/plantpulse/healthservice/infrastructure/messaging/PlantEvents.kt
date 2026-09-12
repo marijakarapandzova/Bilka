@@ -33,11 +33,24 @@ object KafkaTopics {
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class PlantAddedEvent(
-    val plantId: UUID,
+    val plantId: Any,  // Can be UUID string or wrapped {"value": "..."}
     val userId: UUID,
     val speciesId: UUID,
     val wateringFrequencyDays: Int
-)
+) {
+    fun getPlantId(): UUID {
+        return when (plantId) {
+            is UUID -> plantId
+            is String -> UUID.fromString(plantId)
+            is Map<*, *> -> {
+                @Suppress("UNCHECKED_CAST")
+                val map = plantId as Map<String, Any>
+                UUID.fromString(map["value"].toString())
+            }
+            else -> UUID.fromString(plantId.toString())
+        }
+    }
+}
 
 /**
  * Published by Plant Service when an observation (disease/symptom diagnosis) is logged.
@@ -45,12 +58,25 @@ data class PlantAddedEvent(
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class ObservationLoggedEvent(
-    val plantId: UUID,
+    val plantId: Any, // Can be UUID string or wrapped {"value": "..."}
     val userId: UUID,
     val diseaseMatchName: String,
     val diseaseMatchPercentage: Int,
     val cityLocation: String?
-)
+) {
+    fun getPlantId(): UUID {
+        return when (plantId) {
+            is UUID -> plantId
+            is String -> UUID.fromString(plantId)
+            is Map<*, *> -> {
+                @Suppress("UNCHECKED_CAST")
+                val map = plantId as Map<String, Any>
+                UUID.fromString(map["value"].toString())
+            }
+            else -> UUID.fromString(plantId.toString())
+        }
+    }
+}
 
 /**
  * Published when a plant is watered.
@@ -59,9 +85,22 @@ data class ObservationLoggedEvent(
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class PlantWateredEvent(
-    val plantId: UUID,
+    val plantId: Any,  // Can be UUID string or wrapped {"value": "..."}
     val userId: UUID
-)
+) {
+    fun getPlantId(): UUID {
+        return when (plantId) {
+            is UUID -> plantId
+            is String -> UUID.fromString(plantId)
+            is Map<*, *> -> {
+                @Suppress("UNCHECKED_CAST")
+                val map = plantId as Map<String, Any>
+                UUID.fromString(map["value"].toString())
+            }
+            else -> UUID.fromString(plantId.toString())
+        }
+    }
+}
 
 /**
  * Published by Plant Service when a plant is removed.
@@ -69,7 +108,19 @@ data class PlantWateredEvent(
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class PlantRemovedEvent(
-    val plantId: UUID,
+    val plantId: Any,  // Can be UUID string or wrapped {"value": "..."}
     val userId: UUID
-
-)
+) {
+    fun getPlantId(): UUID {
+        return when (plantId) {
+            is UUID -> plantId
+            is String -> UUID.fromString(plantId)
+            is Map<*, *> -> {
+                @Suppress("UNCHECKED_CAST")
+                val map = plantId as Map<String, Any>
+                UUID.fromString(map["value"].toString())
+            }
+            else -> UUID.fromString(plantId.toString())
+        }
+    }
+}

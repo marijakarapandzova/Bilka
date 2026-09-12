@@ -36,7 +36,7 @@ class PlantEventTranslator {
      */
     fun toPlantHealthProfileCommand(event: PlantAddedEvent): PlantHealthProfileCommand {
         return PlantHealthProfileCommand(
-            plantId = event.plantId,
+            plantId = event.getPlantId(),
             userId = event.userId,
             speciesId = event.speciesId,
             wateringFrequencyDays = event.wateringFrequencyDays
@@ -51,7 +51,7 @@ class PlantEventTranslator {
      */
     fun toObservationReceivedCommand(event: ObservationLoggedEvent): ObservationReceivedCommand {
         return ObservationReceivedCommand(
-            plantId = event.plantId,
+            plantId = event.getPlantId(),
             userId = event.userId,
             diseaseMatchName = event.diseaseMatchName,
             diseaseMatchPercentage = event.diseaseMatchPercentage,
@@ -67,7 +67,7 @@ class PlantEventTranslator {
      */
     fun toPlantHealthProfileRemovedCommand(event: PlantRemovedEvent): PlantHealthProfileRemovedCommand {
         return PlantHealthProfileRemovedCommand(
-            plantId = event.plantId,
+            plantId = event.getPlantId(),
             userId = event.userId
         )
     }

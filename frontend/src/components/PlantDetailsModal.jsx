@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import HealthTimeline from './HealthTimeline'
 import './PlantDetailsModal.css'
 
 export default function PlantDetailsModal({ isOpen, onClose, plant, species: passedSpecies, token }) {
@@ -255,6 +256,9 @@ export default function PlantDetailsModal({ isOpen, onClose, plant, species: pas
               </div>
             )}
           </section>
+
+          {/* Health Timeline */}
+          <HealthTimeline plant={plant} token={token} />
         </div>
 
         <button className="btn-close" onClick={onClose}>Close</button>

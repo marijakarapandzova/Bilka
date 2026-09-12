@@ -1,6 +1,40 @@
+import { useState, useEffect } from 'react'
 import './Alert.css'
 
-export default function Alert() {
+export default function Alert({ token, city = 'Skopje' }) {
+  const [outbreaks, setOutbreaks] = useState([])
+
+  useEffect(() => {
+    fetchOutbreaks()
+    // Refresh every 10 minutes
+    const interval = setInterval(fetchOutbreaks, 10 * 60 * 1000)
+    return () => clearInterval(interval)
+  }, [city])
+
+  const fetchOutbreaks = async () => {
+    try {
+      const response = await fetch(`http://localhost:9001/api/alerts/regional/${city}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setOutbreaks(Array.isArray(data) ? data : [])
+      }
+    } catch (err) {
+      console.error('Failed to fetch outbreaks:', err)
+    }
+  }
+
+  // Only show if there are outbreaks
+  if (!outbreaks || outbreaks.length === 0) {
+    return null
+  }
+
+  const firstOutbreak = outbreaks[0]
+
   return (
     <div className="alert">
       <div className="alert-icon">
@@ -9,8 +43,8 @@ export default function Alert() {
         </svg>
       </div>
       <div className="alert-text">
-        <strong>Root rot reported nearby</strong>
-        <span>Four cases logged in your area this week — check drainage before your Monstera's next watering.</span>
+        <strong>{firstOutbreak.diseaseName} reported nearby</strong>
+        <span>{firstOutbreak.affectedPlantCount} case{firstOutbreak.affectedPlantCount !== 1 ? 's' : ''} logged in {firstOutbreak.cityLocation} this week — monitor your plants closely.</span>
       </div>
     </div>
   )

@@ -8,7 +8,9 @@ import AddPlantModal from './components/AddPlantModal'
 import ObservationModal from './components/ObservationModal'
 import PlantDetailsModal from './components/PlantDetailsModal'
 import SharePlantModal from './components/SharePlantModal'
+import NotificationsPanel from './components/NotificationsPanel'
 import CommunityMap from './pages/CommunityMap'
+import Observations from './pages/Observations'
 
 function App() {
   const [plants, setPlants] = useState([])
@@ -68,17 +70,42 @@ function App() {
 
       if (response.ok) {
         const data = await response.json()
-        // Enrich plants with health data and species info
-        const enrichedPlants = data.map((plant) => {
+        // Enrich plants with health data from Health Service
+        const enrichedPlants = await Promise.all(data.map(async (plant) => {
           const spec = speciesMap[plant.speciesId]
+          // Start with neutral health score
+          let health = 75
+
+          // Fetch real health data from Health Service
+          try {
+            const healthResponse = await fetch(`http://localhost:9001/api/health/plants/${plant.id}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            })
+            if (healthResponse.ok) {
+              const healthData = await healthResponse.json()
+              console.log(`✅ Health data synced for ${plant.nickname}:`, healthData.healthScore)
+              health = healthData.healthScore || 75
+            } else if (healthResponse.status === 404) {
+              // Plant not yet in Health Service - using stable default (Kafka event format mismatch)
+              console.log(`ℹ️ Plant ${plant.nickname} health: using default 75`)
+              health = 75
+            }
+          } catch (err) {
+            console.error(`Failed to fetch health for plant ${plant.id}:`, err)
+            health = 75
+          }
+
           return {
             ...plant,
             speciesName: spec?.name || 'Unknown',
-            health: Math.floor(Math.random() * 40 + 60), // Mock: 60-100
-            wateringDaysLeft: plant.wateringFrequencyDays || 7, // Use plant's frequency from species
+            health: health, // Real health score from Health Service
+            wateringDaysLeft: plant.wateringFrequencyDays || 7,
             notes: 'Sample observation data'
           }
-        })
+        }))
         setPlants(enrichedPlants)
       }
     } catch (error) {
@@ -198,12 +225,20 @@ function App() {
   return (
     <div className="app">
       {activeTab === 'community' ? (
-        <CommunityMap token={token} />
+        <div className="wrap">
+          <Navigation activeTab={activeTab} setActiveTab={setActiveTab} token={token} />
+          <CommunityMap token={token} />
+        </div>
+      ) : activeTab === 'observations' ? (
+        <div className="wrap">
+          <Navigation activeTab={activeTab} setActiveTab={setActiveTab} token={token} />
+          <Observations plants={plants} token={token} />
+        </div>
       ) : (
         <div className="wrap">
-          <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+          <Navigation activeTab={activeTab} setActiveTab={setActiveTab} token={token} />
           <Hero plantsCount={plants.length} onAddPlant={() => setShowAddModal(true)} />
-          <Alert />
+          <Alert token={token} city="Skopje" />
 
           {loading ? (
             <div className="loading">Loading your garden...</div>

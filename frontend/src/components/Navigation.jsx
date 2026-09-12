@@ -1,10 +1,13 @@
+import { useState } from 'react'
+import NotificationsPanel from './NotificationsPanel'
 import './Navigation.css'
 
-export default function Navigation({ activeTab, setActiveTab }) {
+export default function Navigation({ activeTab, setActiveTab, token }) {
   const tabs = [
     { label: 'All plants', value: 'all' },
     { label: 'Watering soon', value: 'watering' },
     { label: 'Needs attention', value: 'attention' },
+    { label: 'Observations', value: 'observations' },
     { label: 'Community Map', value: 'community' }
   ]
 
@@ -29,6 +32,7 @@ export default function Navigation({ activeTab, setActiveTab }) {
             {tab.label}
           </button>
         ))}
+        {token && <NotificationsPanel token={token} />}
       </div>
     </nav>
   )

@@ -3,6 +3,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 44px;
+  position: relative;
 }
 
 .brand {
@@ -30,6 +31,7 @@
 .nav-tabs {
   display: flex;
   gap: 26px;
+  align-items: center;
 }
 
 .nav-tab {

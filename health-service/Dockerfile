@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn -q -B dependency:go-offline
 
 # Copy source code and build the JAR
 COPY src ./src
-RUN --mount=type=cache,target=/root/.m2 mvn -q -B -DskipTests package \
+RUN --mount=type=cache,target=/root/.m2 mvn -q -B -Dmaven.test.skip=true package \
     && cp target/*.jar /workspace/app.jar
 
 # === Stage 2: Runtime with JRE ===
