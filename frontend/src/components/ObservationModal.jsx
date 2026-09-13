@@ -17,6 +17,7 @@ export default function ObservationModal({ isOpen, onClose, plant, onObservation
   const [success, setSuccess] = useState(false)
   const [history, setHistory] = useState([])
   const [historyLoading, setHistoryLoading] = useState(false)
+  const [cityLocation, setCityLocation] = useState('Skopje')
   // Kaggle dataset fields
   const [heightCm, setHeightCm] = useState('')
   const [leafCount, setLeafCount] = useState('')
@@ -97,11 +98,33 @@ export default function ObservationModal({ isOpen, onClose, plant, onObservation
           pestSeverity: pestSeverity || null,
           soilMoisturePercent: soilMoisturePercent ? parseFloat(soilMoisturePercent) : null,
           soilType: soilType || null,
-          healthScore: healthScore ? parseInt(healthScore) : null
+          healthScore: healthScore ? parseInt(healthScore) : null,
+          cityLocation: cityLocation || null
         })
       })
 
       if (response.ok) {
+        // Also update health score in Health Service
+        const observationData = await response.json()
+        if (observationData.diseaseMatch) {
+          try {
+            await fetch(`http://localhost:8082/api/health/plants/${plant.id}/record-observation`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                diseaseMatchName: observationData.diseaseMatch.diseaseName,
+                diseaseMatchPercentage: observationData.diseaseMatch.matchPercentage
+              })
+            })
+          } catch (err) {
+            console.warn('Failed to update health score in Health Service:', err)
+            // Don't fail the observation if health service update fails
+          }
+        }
+
         setSuccess(true)
         setTimeout(() => {
           resetForm()
@@ -144,6 +167,7 @@ export default function ObservationModal({ isOpen, onClose, plant, onObservation
     setSoilMoisturePercent('')
     setSoilType('')
     setHealthScore('')
+    setCityLocation('Skopje')
     setError('')
     setSuccess(false)
   }
@@ -188,6 +212,18 @@ export default function ObservationModal({ isOpen, onClose, plant, onObservation
             {error && <div className="form-error">{error}</div>}
 
             {/* Leaf Color */}
+            {/* City Location for Outbreak Detection */}
+            <div className="form-group">
+              <label>City Location</label>
+              <input
+                type="text"
+                placeholder="e.g., Skopje"
+                value={cityLocation}
+                onChange={(e) => setCityLocation(e.target.value)}
+                style={{ padding: '8px', width: '100%', borderRadius: '4px', border: '1px solid #ddd' }}
+              />
+            </div>
+
             <div className="form-group">
               <label>Leaf Color</label>
               <div className="radio-group">

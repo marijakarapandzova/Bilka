@@ -1,57 +1,24 @@
 networks:
-  healthpulse_services_net:
-    name: healthpulse_services_net
-    driver: bridge
   shared_net:
     name: bilka_shared_net
     external: true
 
-volumes:
-  health-postgres-data:
-
 services:
-  # PostgreSQL Database (health-service uses its own DB instance)
-  health-postgres:
-    image: postgres:16
-    container_name: healthpulse-postgres
-    environment:
-      POSTGRES_DB: healthpulse
-      POSTGRES_USER: healthpulse
-      POSTGRES_PASSWORD: healthpulse
-    ports:
-      - "5434:5432"
-    volumes:
-      - health-postgres-data:/var/lib/postgresql/data
-    networks:
-      - healthpulse_services_net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U healthpulse"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # Health Service App (Kafka broker is managed by plant-service)
+  # Health Service App (uses H2 in-memory database, Kafka from plant-service)
   health-service:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: health_service
     ports:
-      - "9001:8082"
+      - "8082:8082"
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:postgresql://health-postgres:5432/healthpulse
-      SPRING_DATASOURCE_USERNAME: healthpulse
-      SPRING_DATASOURCE_PASSWORD: healthpulse
       JWT_SECRET: ${JWT_SECRET:-this-is-a-very-long-development-only-secret-key-please-change-this-in-production-for-security}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: broker:29092
-      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_HOST: host.docker.internal
       SPRING_CLOUD_CONSUL_PORT: 8500
     volumes:
       - ../Indoor_Plant_Health_and_Growth_Factors.csv:/app/Indoor_Plant_Health_and_Growth_Factors.csv
     networks:
-      - healthpulse_services_net
       - shared_net
-    depends_on:
-      health-postgres:
-        condition: service_healthy

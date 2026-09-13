@@ -1,12 +1,16 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/healthpulse
-    username: healthpulse
-    password: healthpulse
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:mem:healthpulse
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    initialization-mode: always
 
   jpa:
     show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}

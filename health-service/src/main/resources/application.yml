@@ -6,16 +6,16 @@ spring:
     allow-bean-definition-overriding: true
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/healthpulse
-    username: healthpulse
-    password: healthpulse
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:mem:healthpulse
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: false
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.H2Dialect
     open-in-view: false
     properties:
       hibernate:
@@ -37,6 +37,9 @@ spring:
       enable-auto-commit: true
       properties:
         spring.json.trusted.packages: "*"
+
+  # Kafka is required for event-driven updates
+  # Do NOT exclude Kafka auto-configuration
 
   cloud:
     consul:

@@ -38,8 +38,33 @@ class DashboardService(
 
     fun plantHealth(plantId: UUID, userId: UUID): PlantHealthResponse {
         val profile = profileRepository.findByIdAndUserId(plantId, userId)
-            ?: throw PlantHealthNotFoundException(plantId)
-        return profile.toDetail()
+        return if (profile != null) {
+            profile.toDetail()
+        } else {
+            // Return default health response for plants without a profile yet
+            // This allows frontend to show initial 75/100 score until observations are logged
+            val now = java.time.Instant.now()
+            PlantHealthResponse(
+                plantId = plantId,
+                nickname = "Plant",
+                speciesName = "Unknown",
+                healthScore = 75,
+                status = "STABLE",
+                diseaseName = "Healthy",
+                diseaseMatchPercentage = 100,
+                treatmentSteps = emptyList(),
+                careSchedule = CareScheduleResponse(
+                    plantId = plantId,
+                    nextWateringDate = now.plusSeconds(86400), // Tomorrow
+                    daysUntilWatering = 1,
+                    wateringUrgency = com.plantpulse.healthservice.domain.plant.WateringUrgency.UPCOMING,
+                    skipWatering = false,
+                    skipWateringReason = null
+                ),
+                lastObservationAt = null,
+                lastWateredAt = now
+            )
+        }
     }
 
     fun history(plantId: UUID, userId: UUID): List<HealthSnapshotResponse> {

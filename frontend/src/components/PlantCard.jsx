@@ -48,7 +48,8 @@ function PlantCard({ plant, onLogObservation, onShowDetails, onDelete, onShare, 
 
   const getWateringStatus = () => {
     const daysLeft = calculateWateringDays()
-    if (daysLeft <= 1) return 'Water this plant NOW!'
+    if (daysLeft <= 0) return 'Water this plant NOW!'
+    if (daysLeft === 1) return 'Water tomorrow'
     return `Water in ${daysLeft} days`
   }
 
@@ -93,7 +94,7 @@ function PlantCard({ plant, onLogObservation, onShowDetails, onDelete, onShare, 
         <span className={`water-status ${calculateWateringDays() <= 0 ? 'urgent' : ''}`}>{getWateringStatus()}</span>
         {onWaterPlant && calculateWateringDays() <= 0 && (
           <button className="water-btn" onClick={() => onWaterPlant(plant)} title="Log watering">
-            ✓
+            ✓ Water Now
           </button>
         )}
       </div>

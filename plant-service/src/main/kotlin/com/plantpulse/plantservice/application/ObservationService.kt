@@ -72,7 +72,7 @@ class ObservationService(
                     userId = userId,
                     diseaseMatchName = diseaseMatch.diseaseName,
                     diseaseMatchPercentage = diseaseMatch.matchPercentage,
-                    cityLocation = user?.location?.city
+                    cityLocation = request.cityLocation ?: user?.location?.city
                 )
             )
         } catch (ex: Exception) {

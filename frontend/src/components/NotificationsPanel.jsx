@@ -21,7 +21,7 @@ export default function NotificationsPanel({ token }) {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch('http://localhost:9001/api/notifications', {
+      const response = await fetch('http://localhost:8082/api/notifications', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -40,7 +40,7 @@ export default function NotificationsPanel({ token }) {
 
   const fetchOutbreaks = async () => {
     try {
-      const response = await fetch(`http://localhost:9001/api/alerts/regional/${city}`, {
+      const response = await fetch(`http://localhost:8082/api/alerts/regional/${city}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -59,7 +59,7 @@ export default function NotificationsPanel({ token }) {
 
   const markAsRead = async (notifId) => {
     try {
-      const response = await fetch(`http://localhost:9001/api/notifications/${notifId}/read`, {
+      const response = await fetch(`http://localhost:8082/api/notifications/${notifId}/read`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -1,6 +1,9 @@
 package com.plantpulse.plantservice.api.plant
 
 import com.plantpulse.plantservice.application.PlantService
+import com.plantpulse.plantservice.domain.plant.PlantId
+import com.plantpulse.plantservice.infrastructure.messaging.PlantAddedEvent
+import com.plantpulse.plantservice.infrastructure.messaging.PlantEventPublisher
 import com.plantpulse.plantservice.security.CurrentUser
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -19,7 +22,10 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api/plants")
 @Tag(name = "Plant API", description = "Manage your plants and garden")
-class PlantController(private val plantService: PlantService) {
+class PlantController(
+    private val plantService: PlantService,
+    private val eventPublisher: PlantEventPublisher
+) {
 
     @PostMapping("/by-photo")
     @Operation(summary = "Add plant by photo", description = "Identify and add a plant to your garden by uploading a photo")
@@ -55,5 +61,31 @@ class PlantController(private val plantService: PlantService) {
     @Operation(summary = "Log watering", description = "Record that you watered a plant")
     fun logWatering(@PathVariable id: UUID): ResponseEntity<PlantResponse> {
         return ResponseEntity.ok(plantService.logWatering(id, CurrentUser.id()))
+    }
+
+    @PostMapping("/sync-health-profiles")
+    @Operation(summary = "Sync health profiles for all plants", description = "Initialize health profiles in Health Service for all existing plants")
+    fun syncHealthProfiles(): ResponseEntity<Map<String, Any>> {
+        val plants = plantService.getGarden(CurrentUser.id())
+        plants.forEach { plant ->
+            try {
+                eventPublisher.publishPlantAdded(
+                    PlantAddedEvent(
+                        plantId = PlantId(plant.id.toString()),
+                        userId = CurrentUser.id(),
+                        speciesId = plant.speciesId,
+                        wateringFrequencyDays = plant.wateringFrequencyDays
+                    )
+                )
+            } catch (e: Exception) {
+                // Continue even if one fails
+                System.err.println("Failed to sync plant ${plant.id}: ${e.message}")
+            }
+        }
+        return ResponseEntity.ok(mapOf(
+            "status" to "success",
+            "message" to "Synced ${plants.size} plants to Health Service",
+            "count" to plants.size
+        ))
     }
 }

@@ -78,7 +78,7 @@ function App() {
 
           // Fetch real health data from Health Service
           try {
-            const healthResponse = await fetch(`http://localhost:9001/api/health/plants/${plant.id}`, {
+            const healthResponse = await fetch(`http://localhost:8082/api/health/plants/${plant.id}`, {
               headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'

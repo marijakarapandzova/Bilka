@@ -41,5 +41,6 @@ data class LogObservationRequest(
     val pestSeverity: String? = null,
     val soilMoisturePercent: Double? = null,
     val soilType: String? = null,
-    val healthScore: Int? = null
+    val healthScore: Int? = null,
+    val cityLocation: String? = null
 )

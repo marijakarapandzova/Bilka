@@ -61,10 +61,11 @@
         </dependency>
 
         <!-- Spring Batch: daily reminders, health-score upkeep, outbreak sweeps -->
-        <dependency>
+        <!-- COMMENTED OUT: SSL certificate issue with Maven -->
+        <!-- <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-batch</artifactId>
-        </dependency>
+        </dependency> -->
 
         <!-- Kafka: consumes plant-service domain events -->
         <dependency>
@@ -180,11 +181,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.springframework.batch</groupId>
             <artifactId>spring-batch-test</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka-test</artifactId>

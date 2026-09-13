@@ -199,7 +199,6 @@ export default function CommunityMap({ token }) {
                     <p className="species">{plant.speciesName}</p>
                     <p className="user">Shared by {plant.userName}</p>
                   </div>
-                  <button className="message-btn">Send Message</button>
                 </div>
               ))
             )}
