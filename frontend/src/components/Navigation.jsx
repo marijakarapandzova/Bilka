@@ -2,7 +2,9 @@ import { useState } from 'react'
 import NotificationsPanel from './NotificationsPanel'
 import './Navigation.css'
 
-export default function Navigation({ activeTab, setActiveTab, token }) {
+export default function Navigation({ activeTab, setActiveTab, token, userEmail, onLogout }) {
+  const [showUserMenu, setShowUserMenu] = useState(false)
+
   const tabs = [
     { label: 'All plants', value: 'all' },
     { label: 'Watering soon', value: 'watering' },
@@ -34,6 +36,32 @@ export default function Navigation({ activeTab, setActiveTab, token }) {
         ))}
         {token && <NotificationsPanel token={token} />}
       </div>
+      {userEmail && (
+        <div className="nav-user">
+          <button
+            className="user-button"
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            title={userEmail}
+          >
+            <span className="user-avatar">👤</span>
+            <span className="user-email">{userEmail}</span>
+          </button>
+          {showUserMenu && (
+            <div className="user-menu">
+              <div className="user-menu-item">{userEmail}</div>
+              <button
+                className="logout-button"
+                onClick={() => {
+                  setShowUserMenu(false)
+                  onLogout()
+                }}
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </nav>
   )
 }

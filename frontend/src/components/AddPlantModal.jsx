@@ -170,6 +170,7 @@ export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) 
 
 
   const handleSelectSpecies = (spec) => {
+    console.log('Selected species:', spec.id, spec.name, spec.careDifficulty)
     setSelectedSpecies(spec)
     setSearchQuery(spec.name)
   }

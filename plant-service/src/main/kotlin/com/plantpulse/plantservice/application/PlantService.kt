@@ -115,7 +115,9 @@ class PlantService(
             room = room,
             currentPhotoUrl = photoUrl
         )
+        println("🌱 Creating plant for userId=$userId, speciesId=${species.id}, nickname=$nickname")
         val saved = plantRepository.save(plant)
+        println("✅ Plant saved to database: id=${saved.id}, userId=${saved.userId}")
 
         try {
             eventPublisher.publishPlantAdded(

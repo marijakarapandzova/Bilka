@@ -18,9 +18,7 @@ class JwtAuthenticationFilter(
 
     private val publicPaths = listOf(
         "/api/auth/",
-        "/api/plants/",
-        "/api/observations/",
-        "/api/species/",
+        "/api/species/",  // Allow browsing species without auth
         "/swagger-ui",
         "/v3/api-docs",
         "/actuator"
