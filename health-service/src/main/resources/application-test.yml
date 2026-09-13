@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: health-service
+
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=LEGACY
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: health-service
+      auto-offset-reset: earliest
+
+  # Disable Consul and Spring Cloud services
+  cloud:
+    consul:
+      enabled: false
+      discovery:
+        enabled: false
+    bus:
+      enabled: false
+
+  # Enable Kafka listeners for async tests
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
+
+server:
+  port: 8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
