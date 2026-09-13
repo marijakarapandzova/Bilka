@@ -3,7 +3,7 @@ import { authService } from '../services/authService'
 import './Auth.css'
 
 export default function Login({ onLoginSuccess }) {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -16,22 +16,16 @@ export default function Login({ onLoginSuccess }) {
 
     try {
       // Validate inputs
-      if (!email || !password) {
-        setError('Please enter both email and password')
+      if (!username || !password) {
+        setError('Please enter both username and password')
         setLoading(false)
         return
       }
 
-      if (!email.includes('@')) {
-        setError('Please enter a valid email address')
-        setLoading(false)
-        return
-      }
+      console.log('Attempting Keycloak login with:', username)
 
-      console.log('Attempting login with:', email)
-
-      // Call login API
-      const result = await authService.login(email, password)
+      // Call Keycloak login
+      const result = await authService.login(username, password)
 
       console.log('Login successful:', result)
 
@@ -62,15 +56,15 @@ export default function Login({ onLoginSuccess }) {
           )}
 
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="username">Username</label>
             <input
-              id="email"
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              type="text"
+              placeholder="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               disabled={loading}
-              autoComplete="email"
+              autoComplete="username"
               required
             />
           </div>
@@ -117,9 +111,10 @@ export default function Login({ onLoginSuccess }) {
         </div>
 
         <div className="demo-credentials">
-          <p className="demo-label">Demo Credentials:</p>
-          <code>Email: ben@example.com</code>
-          <code>Password: benspassword</code>
+          <p className="demo-label">Demo Credentials (Keycloak):</p>
+          <code>ben / benpassword</code>
+          <code>bob / bobspassword</code>
+          <code>test / testpassword</code>
         </div>
       </div>
     </div>

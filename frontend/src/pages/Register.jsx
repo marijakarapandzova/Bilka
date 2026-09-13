@@ -3,65 +3,18 @@ import { authService } from '../services/authService'
 import './Auth.css'
 
 export default function Register({ onRegisterSuccess }) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-
-  const validateForm = () => {
-    if (!email || !password || !confirmPassword) {
-      setError('Please fill in all fields')
-      return false
-    }
-
-    if (!email.includes('@')) {
-      setError('Please enter a valid email address')
-      return false
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters')
-      return false
-    }
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return false
-    }
-
-    return true
+  const handleBackToLogin = (e) => {
+    e.preventDefault()
+    window.dispatchEvent(new CustomEvent('showLogin'))
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    setError('')
+    // Registration is managed through Keycloak - do nothing
+  }
 
-    if (!validateForm()) {
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      console.log('Attempting registration with:', email)
-
-      // Call register API
-      const result = await authService.register(email, password)
-
-      console.log('Registration successful:', result)
-
-      // Give it a moment to ensure token is stored
-      setTimeout(() => {
-        onRegisterSuccess()
-      }, 100)
-    } catch (err) {
-      console.error('Registration failed:', err)
-      setError(err.message || 'Registration failed. Please try again.')
-      setLoading(false)
-    }
+  const handleKeycloakAdminClick = () => {
+    window.open('http://localhost:8090/admin/master/console/#/realms/finki-services/users', '_blank')
   }
 
   return (
@@ -69,94 +22,40 @@ export default function Register({ onRegisterSuccess }) {
       <div className="auth-card">
         <div className="auth-header">
           <h1>🌱 PlantPulse</h1>
-          <p>Create Your Account</p>
+          <p>Account Registration</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          {error && (
-            <div className="auth-error">
-              <span>⚠️ {error}</span>
-            </div>
-          )}
-
-          <div className="form-group">
-            <label htmlFor="email">Email Address</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
-              autoComplete="email"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <div className="password-input-wrapper">
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                autoComplete="new-password"
-                required
-              />
+          <div className="registration-info">
+            <div className="info-icon">ℹ️</div>
+            <div className="info-content">
+              <h3>Registration via Keycloak</h3>
+              <p>User accounts are managed through Keycloak Identity Provider.</p>
+              <p>To create a new user account, please contact your administrator or use the Keycloak admin console.</p>
               <button
                 type="button"
-                className="toggle-password"
-                onClick={() => setShowPassword(!showPassword)}
-                disabled={loading}
+                className="auth-button secondary"
+                onClick={handleKeycloakAdminClick}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
-            </div>
-            <small>At least 6 characters</small>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="confirm-password">Confirm Password</label>
-            <div className="password-input-wrapper">
-              <input
-                id="confirm-password"
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={loading}
-                autoComplete="new-password"
-                required
-              />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                disabled={loading}
-              >
-                {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                Open Keycloak Admin Console
               </button>
             </div>
           </div>
 
           <button
-            type="submit"
+            type="button"
             className="auth-button"
-            disabled={loading}
+            onClick={handleBackToLogin}
           >
-            {loading ? 'Creating Account...' : 'Create Account'}
+            Back to Login
           </button>
         </form>
 
-        <div className="auth-footer">
-          <p>Already have an account? <a href="#" onClick={(e) => {
-            e.preventDefault()
-            // This will be handled by parent component
-            window.dispatchEvent(new CustomEvent('showLogin'))
-          }}>Sign in</a></p>
+        <div className="demo-credentials">
+          <p className="demo-label">Try these demo accounts:</p>
+          <code>ben / benpassword</code>
+          <code>bob / bobspassword</code>
+          <code>test / testpassword</code>
         </div>
       </div>
     </div>

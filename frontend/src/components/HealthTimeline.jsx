@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { authService } from '../services/authService'
 import './HealthTimeline.css'
 
 export default function HealthTimeline({ plant, token }) {
@@ -14,9 +15,10 @@ export default function HealthTimeline({ plant, token }) {
   const fetchHistory = async () => {
     try {
       setLoading(true)
+      const authToken = token || authService.getToken()
       const response = await fetch(`http://localhost:8082/api/health/plants/${plant.id}/history`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })

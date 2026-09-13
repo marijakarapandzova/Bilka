@@ -1,66 +1,67 @@
 const API_BASE = 'http://localhost:8081'
 
+// Helper function to decode JWT and extract claims
+const decodeJWT = (token) => {
+  try {
+    const parts = token.split('.')
+    if (parts.length !== 3) throw new Error('Invalid token format')
+
+    const decoded = JSON.parse(atob(parts[1]))
+    return decoded
+  } catch (error) {
+    console.error('Failed to decode JWT:', error)
+    return null
+  }
+}
+
 export const authService = {
-  // Register new user
-  register: async (email, password) => {
+  // Login user with Keycloak OAuth2 (via Plant Service proxy)
+  login: async (username, password) => {
     try {
-      const response = await fetch(`${API_BASE}/api/auth/register`, {
+      const response = await fetch(`${API_BASE}/api/auth/keycloak-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({
+          username: username,
+          password: password
+        })
       })
 
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || data.message || 'Registration failed')
+        throw new Error(data.error_description || data.error || 'Login failed')
       }
 
-      // Store token
-      if (data.token) {
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('userId', data.userId)
-        localStorage.setItem('userEmail', email)
+      // Extract user ID from JWT's 'sub' claim
+      const decoded = decodeJWT(data.access_token)
+      const userId = decoded?.sub
+
+      if (!userId) {
+        throw new Error('Failed to extract user ID from token')
       }
 
-      return data
-    } catch (error) {
-      console.error('Registration error:', error)
-      throw error
-    }
-  },
+      // Store token and user info
+      localStorage.setItem('token', data.access_token)
+      localStorage.setItem('userId', userId)
+      localStorage.setItem('userEmail', username)
 
-  // Login user
-  login: async (email, password) => {
-    try {
-      const response = await fetch(`${API_BASE}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password })
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || data.message || 'Login failed')
+      return {
+        token: data.access_token,
+        userId: userId,
+        userEmail: username
       }
-
-      // Store token
-      if (data.token) {
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('userId', data.userId)
-        localStorage.setItem('userEmail', email)
-      }
-
-      return data
     } catch (error) {
       console.error('Login error:', error)
       throw error
     }
+  },
+
+  // Register new user (placeholder - Keycloak handles registration)
+  register: async (username, password) => {
+    throw new Error('Registration must be done through Keycloak admin console or a separate registration endpoint')
   },
 
   // Logout user

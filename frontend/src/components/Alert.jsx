@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { authService } from '../services/authService'
 import './Alert.css'
 
 export default function Alert({ token, city = 'Skopje' }) {
@@ -13,9 +14,10 @@ export default function Alert({ token, city = 'Skopje' }) {
 
   const fetchOutbreaks = async () => {
     try {
+      const authToken = token || authService.getToken()
       const response = await fetch(`http://localhost:8082/api/alerts/regional/${city}`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })

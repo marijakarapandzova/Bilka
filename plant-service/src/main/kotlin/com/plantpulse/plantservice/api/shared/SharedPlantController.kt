@@ -25,7 +25,7 @@ class SharedPlantController(private val sharedPlantService: SharedPlantService) 
         ResponseEntity.status(201).body(
             sharedPlantService.sharePlant(
                 CurrentUser.id(),
-                "User",
+                CurrentUser.username(),
                 request
             )
         )

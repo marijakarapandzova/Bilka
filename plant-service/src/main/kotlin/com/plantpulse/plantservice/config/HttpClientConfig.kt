@@ -3,6 +3,7 @@ package com.plantpulse.plantservice.config
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestClient
+import org.springframework.web.client.RestTemplate
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
@@ -14,6 +15,9 @@ class HttpClientConfig {
 
     @Bean
     fun restClient(): RestClient = RestClient.create()
+
+    @Bean
+    fun restTemplate(): RestTemplate = RestTemplate()
 
     companion object {
         init {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { authService } from '../services/authService'
 import './ObservationModal.css'
 import ObservationCalendar from './ObservationCalendar'
 
@@ -45,9 +46,10 @@ export default function ObservationModal({ isOpen, onClose, plant, onObservation
   const loadObservationHistory = async () => {
     setHistoryLoading(true)
     try {
+      const authToken = token || authService.getToken()
       const response = await fetch(`http://localhost:8081/api/plants/${plant.id}/observations`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })

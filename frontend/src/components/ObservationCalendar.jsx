@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { authService } from '../services/authService'
 import './ObservationCalendar.css'
 
 export default function ObservationCalendar({ plant, token, onLogObservation }) {
@@ -14,9 +15,10 @@ export default function ObservationCalendar({ plant, token, onLogObservation }) 
   const loadObservations = async () => {
     setLoading(true)
     try {
+      const authToken = token || authService.getToken()
       const response = await fetch(`http://localhost:8081/api/plants/${plant.id}/observations`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })

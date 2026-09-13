@@ -17,7 +17,7 @@ class JwtAuthenticationFilter(
 ) : OncePerRequestFilter() {
 
     private val publicPaths = listOf(
-        "/api/auth/",
+        "/api/auth/",  // Keep for backward compatibility but won't be used with Keycloak
         "/api/species/",  // Allow browsing species without auth
         "/swagger-ui",
         "/v3/api-docs",

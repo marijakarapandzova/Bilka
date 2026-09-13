@@ -55,6 +55,13 @@ spring:
         health-check-interval: 15s
         register-health-check: true
         port: ${server.port:8082}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8090/realms/finki-services}
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://localhost:8090/realms/finki-services/protocol/openid-connect/certs}
     openfeign:
       client:
         config:
