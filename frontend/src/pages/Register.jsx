@@ -21,13 +21,13 @@ export default function Register({ onRegisterSuccess }) {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <h1>🌱 PlantPulse</h1>
+          <h1>Bilka</h1>
           <p>Account Registration</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="registration-info">
-            <div className="info-icon">ℹ️</div>
+            <div className="info-icon">ℹ</div>
             <div className="info-content">
               <h3>Registration via Keycloak</h3>
               <p>User accounts are managed through Keycloak Identity Provider.</p>

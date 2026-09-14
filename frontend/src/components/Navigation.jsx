@@ -22,7 +22,7 @@ export default function Navigation({ activeTab, setActiveTab, token, userEmail, 
             <path d="M12 21V8" stroke="#FFFFFF" strokeWidth="1.6"/>
           </svg>
         </div>
-        <div className="brand-name">My Garden</div>
+        <div className="brand-name">Bilka</div>
       </div>
       <div className="nav-container">
         <div className="nav-tabs">

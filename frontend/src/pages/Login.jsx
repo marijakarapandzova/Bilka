@@ -44,14 +44,14 @@ export default function Login({ onLoginSuccess }) {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <h1>🌱 PlantPulse</h1>
+          <h1>Bilka</h1>
           <p>Welcome Back</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
           {error && (
             <div className="auth-error">
-              <span>⚠️ {error}</span>
+              <span>{error}</span>
             </div>
           )}
 
@@ -88,7 +88,7 @@ export default function Login({ onLoginSuccess }) {
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={loading}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
+                {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
           </div>

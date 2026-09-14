@@ -6,6 +6,7 @@
   border-radius: 20px;
   padding: 16px 22px;
   margin-bottom: 36px;
+  position: relative;
 }
 
 .alert-icon {
@@ -22,14 +23,36 @@
 .alert-text strong {
   display: block;
   font-size: 14px;
-  color: #8C3B4E;
+  color: var(--berry);
   margin-bottom: 2px;
+  font-weight: 600;
 }
 
 .alert-text span {
   font-size: 13px;
-  color: #8C3B4E;
+  color: var(--berry);
   opacity: 0.85;
+}
+
+.alert-close {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--berry);
+  padding: 4px 8px;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert-close:hover {
+  opacity: 0.7;
 }
 
 @media (max-width: 640px) {

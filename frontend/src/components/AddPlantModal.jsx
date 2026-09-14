@@ -84,8 +84,8 @@ export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) 
         console.error('No auth token available')
         return
       }
-      console.log('Loading Perenual catalog...')
-      const response = await fetch('http://localhost:8081/api/species/catalog/browse?page=1', {
+      console.log('Loading plant species catalog...')
+      const response = await fetch('http://localhost:8081/api/species/catalog/browse?page=1&limit=1000', {
         headers: {
           'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'

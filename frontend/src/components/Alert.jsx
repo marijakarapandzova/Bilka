@@ -4,6 +4,7 @@ import './Alert.css'
 
 export default function Alert({ token, city = 'Skopje' }) {
   const [outbreaks, setOutbreaks] = useState([])
+  const [dismissed, setDismissed] = useState(false)
 
   useEffect(() => {
     fetchOutbreaks()
@@ -39,8 +40,8 @@ export default function Alert({ token, city = 'Skopje' }) {
     }
   }
 
-  // Only show if there are outbreaks
-  if (!outbreaks || outbreaks.length === 0) {
+  // Only show if there are outbreaks and not dismissed
+  if (!outbreaks || outbreaks.length === 0 || dismissed) {
     return null
   }
 
@@ -50,13 +51,14 @@ export default function Alert({ token, city = 'Skopje' }) {
     <div className="alert">
       <div className="alert-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M12 9V13M12 17H12.01M10.29 3.86L1.82 18A2 2 0 0 0 3.55 21H20.45A2 2 0 0 0 22.18 18L13.71 3.86A2 2 0 0 0 10.29 3.86Z" stroke="#C15C74" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M12 9V13M12 17H12.01M10.29 3.86L1.82 18A2 2 0 0 0 3.55 21H20.45A2 2 0 0 0 22.18 18L13.71 3.86A2 2 0 0 0 10.29 3.86Z" stroke="var(--berry)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
       <div className="alert-text">
         <strong>{firstOutbreak.diseaseName} reported nearby</strong>
         <span>{firstOutbreak.affectedPlantCount} case{firstOutbreak.affectedPlantCount !== 1 ? 's' : ''} logged in {firstOutbreak.cityLocation} this week — monitor your plants closely.</span>
       </div>
+      <button className="alert-close" onClick={() => setDismissed(true)}>×</button>
     </div>
   )
 }

@@ -79,6 +79,7 @@ export default function CommunityMap({ token }) {
   const [selectedCity, setSelectedCity] = useState(null)
   const [cityPlants, setCityPlants] = useState([])
   const [showDetails, setShowDetails] = useState(false)
+  const [cityAlerts, setCityAlerts] = useState([])
 
   useEffect(() => {
     fetchCities()
@@ -88,6 +89,7 @@ export default function CommunityMap({ token }) {
   useEffect(() => {
     if (selectedCity) {
       fetchCityPlants(selectedCity)
+      fetchRegionalAlerts(selectedCity)
     }
   }, [selectedCity])
 
@@ -172,6 +174,25 @@ export default function CommunityMap({ token }) {
     }
   }
 
+  const fetchRegionalAlerts = async (city) => {
+    try {
+      const authToken = await authService.getToken()
+      if (!authToken) return
+      const response = await fetch(`http://localhost:8082/api/alerts/regional/${encodeURIComponent(city)}`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setCityAlerts(Array.isArray(data) ? data : [])
+      }
+    } catch (err) {
+      console.error('Failed to fetch regional alerts:', err)
+    }
+  }
+
   window.selectCity = (city) => {
     setSelectedCity(city)
     setShowDetails(true)
@@ -190,6 +211,22 @@ export default function CommunityMap({ token }) {
             <h2>{selectedCity}</h2>
             <button className="close-btn" onClick={() => setShowDetails(false)}>✕</button>
           </div>
+
+          {cityAlerts.length > 0 && (
+            <div className="regional-alerts">
+              <h3 className="alerts-title">Regional Disease Alerts</h3>
+              {cityAlerts.map((alert, idx) => (
+                <div key={idx} className="alert-box">
+                  <div className="alert-badge">Alert</div>
+                  <div className="alert-details">
+                    <p className="alert-disease">{alert.diseaseName}</p>
+                    <p className="alert-info">{alert.affectedPlantCount} plant{alert.affectedPlantCount !== 1 ? 's' : ''} affected in {alert.cityLocation}</p>
+                    <p className="alert-date">{new Date(alert.detectedAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="plants-list">
             {loading ? (
