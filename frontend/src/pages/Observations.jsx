@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { authService } from '../services/authService'
 import '../styles/Observations.css'
 
 export default function Observations({ plants, token }) {
@@ -14,6 +15,12 @@ export default function Observations({ plants, token }) {
   const fetchAllObservations = async () => {
     setLoading(true)
     try {
+      const authToken = await authService.getToken()
+      if (!authToken) {
+        setLoading(false)
+        return
+      }
+
       const allObs = []
 
       // Fetch observations for each plant
@@ -21,7 +28,7 @@ export default function Observations({ plants, token }) {
         try {
           const response = await fetch(`http://localhost:8081/api/plants/${plant.id}/observations`, {
             headers: {
-              'Authorization': `Bearer ${token}`,
+              'Authorization': `Bearer ${authToken}`,
               'Content-Type': 'application/json'
             }
           })

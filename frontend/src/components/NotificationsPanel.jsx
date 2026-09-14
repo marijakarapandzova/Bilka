@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { authService } from '../services/authService'
 import './NotificationsPanel.css'
 
 export default function NotificationsPanel({ token }) {
@@ -21,9 +22,11 @@ export default function NotificationsPanel({ token }) {
 
   const fetchNotifications = async () => {
     try {
+      const authToken = await authService.getToken()
+      if (!authToken) return
       const response = await fetch('http://localhost:8082/api/notifications', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
@@ -40,9 +43,11 @@ export default function NotificationsPanel({ token }) {
 
   const fetchOutbreaks = async () => {
     try {
+      const authToken = await authService.getToken()
+      if (!authToken) return
       const response = await fetch(`http://localhost:8082/api/alerts/regional/${city}`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
@@ -59,10 +64,12 @@ export default function NotificationsPanel({ token }) {
 
   const markAsRead = async (notifId) => {
     try {
+      const authToken = await authService.getToken()
+      if (!authToken) return
       const response = await fetch(`http://localhost:8082/api/notifications/${notifId}/read`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })

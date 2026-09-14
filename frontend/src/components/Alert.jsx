@@ -14,7 +14,8 @@ export default function Alert({ token, city = 'Skopje' }) {
 
   const fetchOutbreaks = async () => {
     try {
-      const authToken = token || authService.getToken()
+      const authToken = token || await authService.getToken()
+      if (!authToken) return
       const response = await fetch(`http://localhost:8082/api/alerts/regional/${city}`, {
         headers: {
           'Authorization': `Bearer ${authToken}`,

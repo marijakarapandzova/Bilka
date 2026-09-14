@@ -46,7 +46,11 @@ export default function ObservationModal({ isOpen, onClose, plant, onObservation
   const loadObservationHistory = async () => {
     setHistoryLoading(true)
     try {
-      const authToken = token || authService.getToken()
+      const authToken = token || await authService.getToken()
+      if (!authToken) {
+        setHistoryLoading(false)
+        return
+      }
       const response = await fetch(`http://localhost:8081/api/plants/${plant.id}/observations`, {
         headers: {
           'Authorization': `Bearer ${authToken}`,
@@ -71,10 +75,17 @@ export default function ObservationModal({ isOpen, onClose, plant, onObservation
     setLoading(true)
 
     try {
+      const authToken = await authService.getToken()
+      if (!authToken) {
+        setError('Authentication failed - please log in again')
+        setLoading(false)
+        return
+      }
+
       const response = await fetch(`http://localhost:8081/api/plants/${plant.id}/observations`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -110,10 +121,11 @@ export default function ObservationModal({ isOpen, onClose, plant, onObservation
         const observationData = await response.json()
         if (observationData.diseaseMatch) {
           try {
+            const healthToken = await authService.getToken()
             await fetch(`http://localhost:8082/api/health/plants/${plant.id}/record-observation`, {
               method: 'POST',
               headers: {
-                'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${healthToken}`,
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({

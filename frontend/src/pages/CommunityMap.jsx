@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { authService } from '../services/authService'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import '../styles/CommunityMap.css'
@@ -104,9 +105,14 @@ export default function CommunityMap({ token }) {
   const fetchCities = async () => {
     setLoading(true)
     try {
+      const authToken = await authService.getToken()
+      if (!authToken) {
+        setLoading(false)
+        return
+      }
       const response = await fetch('http://localhost:8081/api/shared-plants/cities', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
@@ -149,9 +155,11 @@ export default function CommunityMap({ token }) {
 
   const fetchCityPlants = async (city) => {
     try {
+      const authToken = await authService.getToken()
+      if (!authToken) return
       const response = await fetch(`http://localhost:8081/api/shared-plants/city/${encodeURIComponent(city)}`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })

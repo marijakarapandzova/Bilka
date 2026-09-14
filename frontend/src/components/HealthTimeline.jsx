@@ -15,7 +15,11 @@ export default function HealthTimeline({ plant, token }) {
   const fetchHistory = async () => {
     try {
       setLoading(true)
-      const authToken = token || authService.getToken()
+      const authToken = token || await authService.getToken()
+      if (!authToken) {
+        setLoading(false)
+        return
+      }
       const response = await fetch(`http://localhost:8082/api/health/plants/${plant.id}/history`, {
         headers: {
           'Authorization': `Bearer ${authToken}`,

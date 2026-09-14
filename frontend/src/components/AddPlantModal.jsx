@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { authService } from '../services/authService'
 import './AddPlantModal.css'
 
 export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) {
@@ -44,12 +45,18 @@ export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) 
   const searchSpecies = async (query) => {
     setSearchLoading(true)
     try {
+      const authToken = await authService.getToken()
+      if (!authToken) {
+        setFilteredSpecies([])
+        setSearchLoading(false)
+        return
+      }
       console.log('Searching for:', query)
       const url = `http://localhost:8081/api/species?query=${encodeURIComponent(query)}`
       console.log('Fetch URL:', url)
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
@@ -72,10 +79,15 @@ export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) 
 
   const loadAllSpecies = async () => {
     try {
+      const authToken = await authService.getToken()
+      if (!authToken) {
+        console.error('No auth token available')
+        return
+      }
       console.log('Loading Perenual catalog...')
       const response = await fetch('http://localhost:8081/api/species/catalog/browse?page=1', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
@@ -126,10 +138,16 @@ export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) 
         }
 
         try {
+          const authToken = await authService.getToken()
+          if (!authToken) {
+            setError('Authentication failed')
+            setLoading(false)
+            return
+          }
           const response = await fetch('http://localhost:8081/api/plants/by-photo', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${token}`,
+              'Authorization': `Bearer ${authToken}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -192,10 +210,16 @@ export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) 
 
     setLoading(true)
     try {
+      const authToken = await authService.getToken()
+      if (!authToken) {
+        setError('Authentication failed - please log in again')
+        setLoading(false)
+        return
+      }
       const response = await fetch('http://localhost:8081/api/plants/manual', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

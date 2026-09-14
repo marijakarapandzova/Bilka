@@ -15,7 +15,12 @@ export default function ObservationCalendar({ plant, token, onLogObservation }) 
   const loadObservations = async () => {
     setLoading(true)
     try {
-      const authToken = token || authService.getToken()
+      const authToken = token || await authService.getToken()
+      if (!authToken) {
+        console.error('No authentication token available')
+        setLoading(false)
+        return
+      }
       const response = await fetch(`http://localhost:8081/api/plants/${plant.id}/observations`, {
         headers: {
           'Authorization': `Bearer ${authToken}`,

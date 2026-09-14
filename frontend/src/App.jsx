@@ -66,8 +66,8 @@ function App() {
     }
   }, [])
 
-  const getAuthHeaders = () => {
-    const token = authService.getToken()
+  const getAuthHeaders = async () => {
+    const token = await authService.getToken()
     return {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -77,8 +77,9 @@ function App() {
   const fetchSpecies = async () => {
     try {
       console.log('Fetching species...')
+      const headers = await getAuthHeaders()
       const response = await fetch('http://localhost:8081/api/species', {
-        headers: getAuthHeaders()
+        headers
       })
 
       console.log('Species response status:', response.status)
@@ -113,8 +114,9 @@ function App() {
       setError(null)
       console.log('Fetching plants...')
 
+      const headers = await getAuthHeaders()
       const response = await fetch('http://localhost:8081/api/plants', {
-        headers: getAuthHeaders()
+        headers
       })
 
       console.log('Plants response status:', response.status)
@@ -135,8 +137,9 @@ function App() {
           let health = 75
 
           try {
+            const headers = await getAuthHeaders()
             const healthResponse = await fetch(`http://localhost:8082/api/health/plants/${plant.id}`, {
-              headers: getAuthHeaders()
+              headers
             })
 
             if (healthResponse.ok) {
@@ -260,9 +263,10 @@ function App() {
   const handleWaterPlant = async (plant) => {
     try {
       console.log('Watering plant:', plant.nickname)
+      const headers = await getAuthHeaders()
       const response = await fetch(`http://localhost:8081/api/plants/${plant.id}/water`, {
         method: 'POST',
-        headers: getAuthHeaders()
+        headers
       })
 
       console.log('Water response status:', response.status)
@@ -291,9 +295,10 @@ function App() {
       return
     }
     try {
+      const headers = await getAuthHeaders()
       const response = await fetch(`http://localhost:8081/api/plants/${plantId}`, {
         method: 'DELETE',
-        headers: getAuthHeaders()
+        headers
       })
 
       if (response.status === 401) {
