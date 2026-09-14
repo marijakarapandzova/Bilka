@@ -34,9 +34,8 @@ class SecurityConfig(
                 auth.requestMatchers("/actuator/**").permitAll()  // Health checks
                 auth.anyRequest().authenticated()  // Everything else requires auth
             }
-            .oauth2ResourceServer { oauth2 ->
-                oauth2.jwt { }  // Use Keycloak JWT validation
-            }
+            // Custom JWT validation is handled by JwtAuthenticationFilter
+            // Disable default OAuth2 JWT validation to allow custom JWT tokens
 
         return http.build()
     }

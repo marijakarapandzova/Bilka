@@ -19,15 +19,20 @@ class JwtService(
         val expiry = Date(now.time + expirationMs)
 
         return Jwts.builder()
-            .subject(email)
-            .claim("userId", userId)
+            .subject(userId)  // Use userId as "sub" claim for backend compatibility
+            .claim("email", email)  // Store email as a separate claim
             .issuedAt(now)
             .expiration(expiry)
             .signWith(key)
             .compact()
     }
 
-    fun extractEmail(token: String): String = parseClaims(token).subject
+    fun extractEmail(token: String): String {
+        val claims = parseClaims(token)
+        // Try to get from "email" claim first (new format)
+        val email = claims.get("email", String::class.java)
+        return email ?: claims.subject  // Fallback to subject if email claim not found
+    }
 
     fun extractUserId(token: String): String =
         parseClaims(token).get("userId", String::class.java)

@@ -23,97 +23,83 @@ const isTokenExpired = (token) => {
   return Date.now() >= expiresAt - 60000 // refresh 60s before expiry
 }
 
-// Refresh token via Plant Service proxy
-const refreshToken = async (username) => {
+// Logout helper
+const performLogout = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('userId')
+  localStorage.removeItem('userEmail')
+}
+
+// Refresh token via Plant Service
+const refreshToken = async (email) => {
   try {
-    console.log('🔄 Refreshing Keycloak token...')
-    const password = localStorage.getItem('userPassword')
-
-    if (!password) {
-      throw new Error('Password not stored - please log in again')
+    console.log('🔄 Refreshing JWT token...')
+    // Note: Token refresh typically not needed for JWT since they don't expire during session
+    // Just return the current token - in production, implement token refresh with refresh_token
+    const currentToken = localStorage.getItem('token')
+    if (currentToken && !isTokenExpired(currentToken)) {
+      return currentToken
     }
 
-    const response = await fetch(`${API_BASE}/api/auth/keycloak-login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password
-      })
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.error_description || 'Token refresh failed')
-    }
-
-    // Extract user ID from JWT's 'sub' claim
-    const decoded = decodeJWT(data.access_token)
-    const userId = decoded?.sub
-
-    if (!userId) {
-      throw new Error('Failed to extract user ID from token')
-    }
-
-    // Store new token
-    localStorage.setItem('token', data.access_token)
-    localStorage.setItem('userId', userId)
-
-    console.log('✅ Token refreshed successfully')
-    return data.access_token
+    // If token is expired, user needs to login again
+    throw new Error('Session expired - please login again')
   } catch (error) {
     console.error('❌ Token refresh failed:', error)
     // Clear auth on refresh failure
-    authService.logout()
+    performLogout()
     throw error
   }
 }
 
 export const authService = {
-  // Login user with Keycloak OAuth2 (via Plant Service proxy)
-  login: async (username, password) => {
+  // Login user with JWT (Plant Service)
+  login: async (email, password) => {
     try {
-      const response = await fetch(`${API_BASE}/api/auth/keycloak-login`, {
+      console.log('🔐 Attempting login for:', email)
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: username,
+          email: email,
           password: password
         })
       })
 
+      console.log('📡 Login response status:', response.status)
+
       const data = await response.json()
+      console.log('📦 Login response data:', data)
 
       if (!response.ok) {
-        throw new Error(data.error_description || data.error || 'Login failed')
+        const errorMsg = data.error || data.message || 'Login failed'
+        console.error('❌ Login failed with status', response.status, ':', errorMsg)
+        throw new Error(errorMsg)
       }
 
       // Extract user ID from JWT's 'sub' claim
-      const decoded = decodeJWT(data.access_token)
-      const userId = decoded?.sub
+      const decoded = decodeJWT(data.token)
+      const userId = decoded?.userId || data.userId
 
       if (!userId) {
+        console.error('❌ No userId found in token:', decoded)
         throw new Error('Failed to extract user ID from token')
       }
 
-      // Store token, user info, and password for refresh
-      localStorage.setItem('token', data.access_token)
+      // Store token and user info
+      localStorage.setItem('token', data.token)
       localStorage.setItem('userId', userId)
-      localStorage.setItem('userEmail', username)
-      localStorage.setItem('userPassword', password)
+      localStorage.setItem('userEmail', data.email || email)
 
+      console.log('✅ Login successful for:', email)
       return {
-        token: data.access_token,
+        token: data.token,
         userId: userId,
-        userEmail: username
+        userEmail: data.email || email
       }
     } catch (error) {
-      console.error('Login error:', error)
+      console.error('❌ Login error:', error.message)
       throw error
     }
   },

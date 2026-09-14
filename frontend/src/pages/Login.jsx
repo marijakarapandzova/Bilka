@@ -3,7 +3,7 @@ import { authService } from '../services/authService'
 import './Auth.css'
 
 export default function Login({ onLoginSuccess }) {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -15,21 +15,16 @@ export default function Login({ onLoginSuccess }) {
     setLoading(true)
 
     try {
-      // Validate inputs
-      if (!username || !password) {
-        setError('Please enter both username and password')
+      if (!email || !password) {
+        setError('Please enter both email and password')
         setLoading(false)
         return
       }
 
-      console.log('Attempting Keycloak login with:', username)
-
-      // Call Keycloak login
-      const result = await authService.login(username, password)
-
+      console.log('Attempting login with:', email)
+      const result = await authService.login(email, password)
       console.log('Login successful:', result)
 
-      // Give it a moment to ensure token is stored
       setTimeout(() => {
         onLoginSuccess()
       }, 100)
@@ -56,15 +51,15 @@ export default function Login({ onLoginSuccess }) {
           )}
 
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">Email</label>
             <input
-              id="username"
-              type="text"
-              placeholder="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="email"
+              type="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
-              autoComplete="username"
+              autoComplete="email"
               required
             />
           </div>
@@ -111,10 +106,9 @@ export default function Login({ onLoginSuccess }) {
         </div>
 
         <div className="demo-credentials">
-          <p className="demo-label">Demo Credentials (Keycloak):</p>
-          <code>ben / benpassword</code>
-          <code>bob / bobspassword</code>
-          <code>test / testpassword</code>
+          <p className="demo-label">Demo Credentials:</p>
+          <code>ben@example.com / benspassword</code>
+          <p style={{fontSize: '12px', color: '#66765F', margin: '8px 0 0 0'}}>Or register a new account</p>
         </div>
       </div>
     </div>

@@ -216,6 +216,12 @@ export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) 
         setLoading(false)
         return
       }
+      console.log('📤 Sending plant data:', {
+        speciesId: selectedSpecies.id,
+        nickname: nickname,
+        room: room || null
+      })
+
       const response = await fetch('http://localhost:8081/api/plants/manual', {
         method: 'POST',
         headers: {
@@ -230,7 +236,12 @@ export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) 
         })
       })
 
+      console.log('📥 Add plant response status:', response.status, response.ok)
+      const responseData = await response.json()
+      console.log('📥 Add plant response data:', responseData)
+
       if (response.ok) {
+        console.log('✅ Plant created successfully')
         setSuccess(true)
         setTimeout(() => {
           resetForm()
@@ -238,8 +249,8 @@ export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) 
           onClose()
         }, 1500)
       } else {
-        const errorData = await response.json()
-        setError(errorData.message || 'Failed to add plant')
+        console.error('❌ Failed to add plant:', responseData)
+        setError(responseData.message || 'Failed to add plant')
       }
     } catch (err) {
       setError('Error adding plant: ' + err.message)
