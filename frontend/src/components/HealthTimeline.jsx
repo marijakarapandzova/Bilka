@@ -15,20 +15,26 @@ export default function HealthTimeline({ plant, token }) {
   const fetchHistory = async () => {
     try {
       setLoading(true)
-      const authToken = token || await authService.getToken()
+      // Always get fresh token, ignore token prop
+      const authToken = await authService.getToken()
       if (!authToken) {
+        console.warn('No auth token available for health history')
         setLoading(false)
         return
       }
+      console.log('Fetching health history with token, expires in:', authService.getTokenExpiryIn(), 'seconds')
       const response = await fetch(`http://localhost:8082/api/health/plants/${plant.id}/history`, {
         headers: {
           'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
+      console.log('Health history response:', response.status)
       if (response.ok) {
         const data = await response.json()
         setHistory(Array.isArray(data) ? data : [])
+      } else if (response.status === 401) {
+        console.error('Unauthorized for health history - token may have expired')
       }
     } catch (err) {
       console.error('Failed to fetch health history:', err)

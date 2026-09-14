@@ -1,14 +1,23 @@
 .hero {
   padding: 10px 0 44px 0;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: flex-start;
-  gap: 32px;
+  gap: 20px;
 }
 
 .hero-content {
   max-width: 640px;
   flex: 1;
+  margin-left: 80px;
+}
+
+.hero-footer {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
 }
 
 .eyebrow {
@@ -37,7 +46,7 @@
   font-size: 15px;
   color: var(--ink-soft);
   line-height: 1.6;
-  margin: 0;
+  margin: 0 0 0 80px;
   max-width: 460px;
 }
 
@@ -57,6 +66,8 @@
   transition: all 0.2s ease;
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(95, 167, 88, 0.2);
+  margin-left: auto;
+  margin-right: 80px;
 }
 
 .btn-add-plant:hover {

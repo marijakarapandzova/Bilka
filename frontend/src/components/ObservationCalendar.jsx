@@ -15,21 +15,26 @@ export default function ObservationCalendar({ plant, token, onLogObservation }) 
   const loadObservations = async () => {
     setLoading(true)
     try {
-      const authToken = token || await authService.getToken()
+      // Always get fresh token, ignore token prop
+      const authToken = await authService.getToken()
       if (!authToken) {
-        console.error('No authentication token available')
+        console.warn('No auth token available for observations')
         setLoading(false)
         return
       }
+      console.log('Fetching observations with token, expires in:', authService.getTokenExpiryIn(), 'seconds')
       const response = await fetch(`http://localhost:8081/api/plants/${plant.id}/observations`, {
         headers: {
           'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
+      console.log('Observations response:', response.status)
       if (response.ok) {
         const data = await response.json()
         setObservations(data)
+      } else if (response.status === 401) {
+        console.error('Unauthorized for observations - token may have expired')
       }
     } catch (err) {
       console.error('Failed to load observations:', err)

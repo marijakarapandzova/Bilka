@@ -46,20 +46,26 @@ export default function ObservationModal({ isOpen, onClose, plant, onObservation
   const loadObservationHistory = async () => {
     setHistoryLoading(true)
     try {
-      const authToken = token || await authService.getToken()
+      // Always get fresh token, ignore token prop
+      const authToken = await authService.getToken()
       if (!authToken) {
+        console.warn('No auth token available for observations')
         setHistoryLoading(false)
         return
       }
+      console.log('Fetching observation history with token, expires in:', authService.getTokenExpiryIn(), 'seconds')
       const response = await fetch(`http://localhost:8081/api/plants/${plant.id}/observations`, {
         headers: {
           'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
+      console.log('Observation history response:', response.status)
       if (response.ok) {
         const data = await response.json()
         setHistory(data)
+      } else if (response.status === 401) {
+        console.error('Unauthorized for observation history - token may have expired')
       }
     } catch (err) {
       console.error('Failed to load observation history:', err)

@@ -1,5 +1,6 @@
 .observations-page {
   max-width: 900px;
+  margin: 0 auto;
 }
 
 .obs-header {
@@ -9,14 +10,14 @@
 
 .obs-header h2 {
   font-size: 1.5rem;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0 0 0.25rem 0;
   font-weight: 600;
 }
 
 .obs-header p {
   font-size: 0.85rem;
-  color: #9ca3af;
+  color: var(--ink-soft);
   margin: 0;
 }
 
@@ -36,7 +37,7 @@
 
 .control-group label {
   font-weight: 500;
-  color: #6b7280;
+  color: var(--ink-soft);
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -44,10 +45,10 @@
 
 .select-filter {
   padding: 0.6rem 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--line);
   border-radius: 20px;
   background: white;
-  color: #1f2937;
+  color: var(--ink);
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -56,14 +57,14 @@
 
 .select-filter:hover,
 .select-filter:focus {
-  border-color: #10b981;
+  border-color: var(--green);
   outline: none;
-  background: #f0fdf4;
+  background: var(--green-pale);
 }
 
 .btn-refresh {
   padding: 0.6rem 1.25rem;
-  background: #10b981;
+  background: var(--green);
   color: white;
   border: none;
   border-radius: 20px;
@@ -76,24 +77,24 @@
 }
 
 .btn-refresh:hover {
-  background: #059669;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+  background: var(--green-deep);
+  box-shadow: 0 2px 8px rgba(95, 167, 88, 0.2);
 }
 
 .obs-loading {
   text-align: center;
   padding: 2rem;
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: var(--ink-soft);
 }
 
 .obs-empty {
   text-align: center;
   padding: 2rem;
-  background: white;
+  background: var(--card);
   border-radius: 8px;
-  color: #9ca3af;
-  border: 1px solid #f3f4f6;
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
 }
 
 .obs-timeline {
@@ -103,17 +104,17 @@
 }
 
 .obs-item {
-  background: white;
+  background: var(--card);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
-  border: 1px solid #f3f4f6;
+  border: 1px solid var(--line);
 }
 
 .obs-item:hover {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  border-color: #e5e7eb;
+  border-color: var(--green);
 }
 
 .obs-header-bar {
@@ -121,8 +122,8 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 1rem 1.5rem;
-  background: white;
-  border-bottom: 1px solid #f3f4f6;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
 }
 
 .obs-plant-info {
@@ -135,19 +136,19 @@
 .obs-plant-name {
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--ink);
   margin: 0;
 }
 
 .obs-species {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--ink-soft);
 }
 
 .obs-date {
   text-align: right;
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--ink-soft);
   white-space: nowrap;
   margin-left: 1rem;
 }
@@ -173,7 +174,7 @@
 .obs-section h4 {
   margin: 0;
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--ink-soft);
   text-transform: uppercase;
   letter-spacing: 0.4px;
   font-weight: 600;
@@ -185,7 +186,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--line);
 }
 
 .health-badge {
@@ -199,7 +200,7 @@
 }
 
 .health-status {
-  color: #6b7280;
+  color: var(--ink-soft);
   font-size: 0.8rem;
 }
 
@@ -221,15 +222,15 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.4rem 0.75rem;
-  background: #f9fafb;
+  background: var(--track);
   border-radius: 4px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--line);
   font-size: 0.8rem;
 }
 
 .symptom-item.pest {
-  border-color: #ef4444;
-  background: #fee2e2;
+  border-color: var(--berry);
+  background: var(--berry-soft);
 }
 
 .symptom-emoji {
@@ -238,11 +239,11 @@
 
 .symptom-label {
   font-weight: 500;
-  color: #6b7280;
+  color: var(--ink-soft);
 }
 
 .symptom-value {
-  color: #1f2937;
+  color: var(--ink);
   font-weight: 600;
 }
 
@@ -377,11 +378,11 @@
 .notes-text {
   margin: 0;
   font-size: 0.85rem;
-  color: #6b7280;
+  color: var(--ink-soft);
   font-style: italic;
   padding: 0.5rem 0;
-  border-top: 1px solid #f3f4f6;
-  border-bottom: 1px solid #f3f4f6;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   padding: 0.75rem 0;
 }
 

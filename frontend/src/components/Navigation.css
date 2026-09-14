@@ -1,15 +1,22 @@
 .nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 44px;
   position: relative;
 }
 
+.nav-container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-left: auto;
+}
+
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
 }
 
 .brand-mark {
@@ -30,21 +37,22 @@
 
 .nav-tabs {
   display: flex;
-  gap: 26px;
+  gap: 40px;
   align-items: center;
 }
 
 .nav-tab {
   font-family: 'Inter', sans-serif;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--ink-soft);
   background: none;
   border: none;
-  padding: 0 0 5px 0;
+  padding: 8px 0 5px 0;
   cursor: pointer;
   border-bottom: 2px solid transparent;
   transition: color 0.2s ease;
+  white-space: nowrap;
 }
 
 .nav-tab:hover {
@@ -63,16 +71,15 @@
 
 .nav-user {
   position: relative;
-  margin-left: auto;
 }
 
 .user-button {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #22301F;
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
@@ -87,17 +94,20 @@
 }
 
 .user-button:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .user-avatar {
-  font-size: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #22301F;
 }
 
 .user-email {
   font-size: 12px;
-  opacity: 0.9;
+  color: #66765F;
 }
 
 .user-menu {

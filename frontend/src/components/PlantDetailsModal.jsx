@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { authService } from '../services/authService'
 import HealthTimeline from './HealthTimeline'
 import './PlantDetailsModal.css'
 
@@ -15,9 +16,15 @@ export default function PlantDetailsModal({ isOpen, onClose, plant, species: pas
   const fetchSpecies = async (speciesId) => {
     try {
       console.log('Fetching species details for ID:', speciesId)
+      // Always get fresh token
+      const authToken = await authService.getToken()
+      if (!authToken) {
+        console.warn('No auth token available for species details')
+        return
+      }
       const response = await fetch(`http://localhost:8081/api/species/${speciesId}/details`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
@@ -38,6 +45,8 @@ export default function PlantDetailsModal({ isOpen, onClose, plant, species: pas
           health_score: data.health_score
         })
         setSpecies(data)
+      } else if (response.status === 401) {
+        console.error('Unauthorized for species details - token may have expired')
       } else {
         console.error('Failed to fetch full species details:', response.status)
       }

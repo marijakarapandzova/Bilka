@@ -24,44 +24,46 @@ export default function Navigation({ activeTab, setActiveTab, token, userEmail, 
         </div>
         <div className="brand-name">My Garden</div>
       </div>
-      <div className="nav-tabs">
-        {tabs.map((tab) => (
-          <button
-            key={tab.value}
-            className={`nav-tab ${activeTab === tab.value ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab.value)}
-          >
-            {tab.label}
-          </button>
-        ))}
-        {token && <NotificationsPanel token={token} />}
-      </div>
-      {userEmail && (
-        <div className="nav-user">
-          <button
-            className="user-button"
-            onClick={() => setShowUserMenu(!showUserMenu)}
-            title={userEmail}
-          >
-            <span className="user-avatar">👤</span>
-            <span className="user-email">{userEmail}</span>
-          </button>
-          {showUserMenu && (
-            <div className="user-menu">
-              <div className="user-menu-item">{userEmail}</div>
-              <button
-                className="logout-button"
-                onClick={() => {
-                  setShowUserMenu(false)
-                  onLogout()
-                }}
-              >
-                Sign Out
-              </button>
-            </div>
-          )}
+      <div className="nav-container">
+        <div className="nav-tabs">
+          {tabs.map((tab) => (
+            <button
+              key={tab.value}
+              className={`nav-tab ${activeTab === tab.value ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.value)}
+            >
+              {tab.label}
+            </button>
+          ))}
+          {token && <NotificationsPanel token={token} />}
         </div>
-      )}
+        {userEmail && (
+          <div className="nav-user">
+            <button
+              className="user-button"
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              title={userEmail}
+            >
+              <span className="user-avatar">Profile</span>
+              <span className="user-email">{userEmail}</span>
+            </button>
+            {showUserMenu && (
+              <div className="user-menu">
+                <div className="user-menu-item">{userEmail}</div>
+                <button
+                  className="logout-button"
+                  onClick={() => {
+                    setShowUserMenu(false)
+                    onLogout()
+                  }}
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </nav>
   )
 }

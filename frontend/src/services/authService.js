@@ -164,5 +164,18 @@ export const authService = {
 
   getUserId: () => {
     return localStorage.getItem('userId')
+  },
+
+  // Get time until token expires (in seconds)
+  getTokenExpiryIn: () => {
+    const token = localStorage.getItem('token')
+    if (!token) return 0
+
+    const decoded = decodeJWT(token)
+    if (!decoded || !decoded.exp) return 0
+
+    const expiresAt = decoded.exp * 1000 // convert to milliseconds
+    const secondsRemaining = Math.round((expiresAt - Date.now()) / 1000)
+    return Math.max(0, secondsRemaining)
   }
 }

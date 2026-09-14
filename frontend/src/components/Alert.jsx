@@ -14,17 +14,25 @@ export default function Alert({ token, city = 'Skopje' }) {
 
   const fetchOutbreaks = async () => {
     try {
-      const authToken = token || await authService.getToken()
-      if (!authToken) return
+      // Always get fresh token, ignore token prop
+      const authToken = await authService.getToken()
+      if (!authToken) {
+        console.warn('No auth token available for alerts')
+        return
+      }
+      console.log('Fetching alerts with token, expires in:', authService.getTokenExpiryIn(), 'seconds')
       const response = await fetch(`http://localhost:8082/api/alerts/regional/${city}`, {
         headers: {
           'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
+      console.log('Alerts response:', response.status)
       if (response.ok) {
         const data = await response.json()
         setOutbreaks(Array.isArray(data) ? data : [])
+      } else if (response.status === 401) {
+        console.error('Unauthorized for alerts - token may have expired')
       }
     } catch (err) {
       console.error('Failed to fetch outbreaks:', err)

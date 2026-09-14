@@ -152,7 +152,7 @@ export default function Observations({ plants, token }) {
         </div>
 
         <button className="btn-refresh" onClick={fetchAllObservations}>
-          🔄 Refresh
+          Refresh
         </button>
       </div>
 
