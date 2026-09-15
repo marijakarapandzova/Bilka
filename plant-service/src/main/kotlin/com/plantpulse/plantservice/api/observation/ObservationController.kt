@@ -26,7 +26,7 @@ class ObservationController(private val observationService: ObservationService) 
         @Valid @RequestBody request: LogObservationRequest
     ): ResponseEntity<ObservationResponse> {
         val response = observationService.logObservation(plantId, CurrentUser.id(), request)
-        return ResponseEntity.status(201).body(response)
+        return ResponseEntity.ok(response)  // Return 200 OK instead of 201 Created
     }
 
     @GetMapping

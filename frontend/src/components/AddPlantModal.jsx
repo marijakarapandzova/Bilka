@@ -407,7 +407,7 @@ export default function AddPlantModal({ isOpen, onClose, onPlantAdded, token }) 
             <div className="form-group">
               <label>Photo URL (optional)</label>
               <input
-                type="url"
+                type="text"
                 placeholder="e.g., https://example.com/plant.jpg"
                 value={photoUrl}
                 onChange={(e) => setPhotoUrl(e.target.value)}
